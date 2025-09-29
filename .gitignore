@@ -1,0 +1,71 @@
+# ====================================
+# Django
+# ====================================
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+static
+# Eviter d’exposer les fichiers sensibles
+.env.local
+*.env
+app/.env.dev
+.env.prod
+.env.prod.db
+
+
+# ====================================
+# Python
+# ====================================
+*.py[cod]
+*$py.class
+__pycache__/
+.Python
+*.so
+*.pyd
+*.pyo
+*.pdb
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+
+# ====================================
+# IDE (PyCharm / VSCode)
+# ====================================
+.vscode/
+.idea/
+*.iml
+
+# ====================================
+# Coverage / Tests
+# ====================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ====================================
+# Migrations compilées (on garde les migrations mais pas les caches)
+# ====================================
+*/migrations/__pycache__/
+
+# ====================================
+# OS files
+# ====================================
+.DS_Store
+Thumbs.db
