@@ -1,0 +1,113 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+{% include 'messages.html' %}
+                    <div class="container-fluid px-4">
+
+                        <h2 class="mt-4">Liste des clients</h2>
+
+                        <hr>
+
+
+                    <a href="{% url 'customer_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un client</a>
+
+                        <hr>
+                        <div class="row">
+
+                          <!-- Champ de recherche -->
+                           {% include 'search_form.html' %}
+
+                        <table class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col" >Nom</th>
+                              <th scope="col" >Prénoms</th>
+                              <th scope="col" >Sexe</th>
+                              <th scope="col" >N° Tel</th>
+                              <th scope="col" class="d-none d-md-table-cell" >Email</th>
+                              <th scope="col" class="d-none d-md-table-cell">N° Piece identité</th>
+                              <th scope="col" class="d-none d-md-table-cell" >Adresse</th>
+                              <th scope="col" class="d-none d-md-table-cell">Pays</th>
+                              <th scope="col">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                                {% for client in clients %}
+                            <tr>
+                              <td >{{ client.lastName }}</td>
+                              <td >{{ client.firstName }}</td>
+                              <td >{{ client.sex }}</td>
+                              <td >{{ client.phone_number }}</td>
+                              <td >{{ client.email }}</td>
+                              <td >{{ client.IDCardNumber }}</td>
+                              <td >{{ client.address }}</td>
+                              <td >{{ client.country }}</td>
+
+                            <!-- Boutons CRUD -->
+                             <td >
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+{#                                {% if perms.products.change_product %}#}
+                                    <a href="" class="btn btn-sm btn-warning">Modifier</a>
+        {#                            <a href="{% url 'product_edit' product.id %}" class="btn btn-sm btn-warning">Modifier</a>#}
+        {#                                {% endif %}#}
+
+        {#                            {% if perms.products.delete_product %}#}
+                                <button
+                                   class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ client.id }}">
+
+                                    Supprimer
+                                </button>
+{#                            {% endif %}#}
+                        </div>
+                            </td>
+                    </tr>
+
+
+
+                                <!-- Modale de confirmation -->
+                                    <div class="modal fade" id="deleteModal{{ client.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ client.id }}" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ client.id }}">Confirmation de suppression</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            Êtes-vous sûr de vouloir supprimer le client <strong>{{lient.lastName }}</strong> ?
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <form method="post" action="">
+{#                                            <form method="post" action="{% url 'product_delete' product.id %}">#}
+                                              {% csrf_token %}
+                                              <button type="submit" class="btn btn-danger">Confirmer</button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                        </td>
+                            </tr>
+
+                                {% endfor %}
+
+                          </tbody>
+                        </table>
+                           {% include 'pagination.html' %}
+
+                        </div>
+
+                    </div>
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+
