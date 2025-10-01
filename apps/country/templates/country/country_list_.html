@@ -5,12 +5,12 @@
 {% include 'messages.html' %}
                     <div class="container-fluid px-4">
 
-                        <h2 class="mt-4">Liste des clients</h2>
+                        <h2 class="mt-4">Liste des pays</h2>
 
                         <hr>
 
 
-                    <a href="{% url 'customer_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un client</a>
+                    <a href="{% url 'country_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un pays</a>
 
                         <hr>
                         <div class="row">
@@ -21,42 +21,29 @@
                         <table class="table table-bordered table-striped">
                           <thead>
                             <tr>
-                              <th scope="col" >Nom</th>
-                              <th scope="col" >Prénoms</th>
-                              <th scope="col" class="d-none d-md-table-cell">Sexe</th>
-                              <th scope="col" >N° Tel</th>
-                              <th scope="col" class="d-none d-md-table-cell" >Email</th>
-                              <th scope="col" class="d-none d-md-table-cell">N° Piece identité</th>
-                              <th scope="col" class="d-none d-md-table-cell" >Adresse</th>
-                              <th scope="col" >Pays</th>
-                              <th scope="col">Actions</th>
+                              <th scope="col" >Nom </th>
+                       
                             </tr>
                           </thead>
                           <tbody>
-                                {% for customer in customers %}
+                                {% for country in countries %}
                             <tr>
-                              <td >{{ customer.lastName }}</td>
-                              <td >{{ customer.firstName }}</td>
-                              <td class="d-none d-md-table-cell">{{ customer.sex }}</td>
-                              <td >{{ customer.phone_number }}</td>
-                              <td class="d-none d-md-table-cell">{{ customer.email }}</td>
-                              <td class="d-none d-md-table-cell">{{ customer.IDCardNumber }}</td>
-                              <td class="d-none d-md-table-cell">{{ customer.address }}</td>
-                              <td >{{ customer.country }}</td>
+                              <td >{{ country.name }}</td>
+                              
 
                             <!-- Boutons CRUD -->
                              <td >
                                 <div class="d-flex flex-column flex-sm-row gap-2">
 {#                                {% if perms.products.change_product %}#}
-                                    <a href="{% url 'customer_edit' customer.id %}" class="btn btn-sm btn-warning">Modifier</a>
-        {#                            <a href="{% url 'product_edit' product.id %}" class="btn btn-sm btn-warning">Modifier</a>#}
+                                    <a href="{% url 'country_edit' country.id %}" class="btn btn-sm btn-warning">Modifier</a>
+
         {#                                {% endif %}#}
 
         {#                            {% if perms.products.delete_product %}#}
                                 <button
                                    class="btn btn-sm btn-danger"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ customer.id }}">
+                                    data-bs-target="#deleteModal{{ country.id }}">
 
                                     Supprimer
                                 </button>
@@ -68,20 +55,20 @@
 
 
                                 <!-- Modale de confirmation -->
-                                    <div class="modal fade" id="deleteModal{{ customer.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ customer.id }}" aria-hidden="true">
+                                    <div class="modal fade" id="deleteModal{{ country.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ country.id }}" aria-hidden="true">
                                       <div class="modal-dialog">
                                         <div class="modal-content">
                                           <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ customer.id }}">Confirmation de suppression</h5>
+                                            <h5 class="modal-title" id="deleteModalLabel{{ country.id }}">Confirmation de suppression</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                           </div>
                                           <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer le client <strong>{{customer.lastName }}</strong> ?
+                                            Êtes-vous sûr de vouloir supprimer le pays <strong>{{country.name }}</strong> ?
                                           </div>
                                           <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 
-                                            <form method="post" action="{% url 'customer_delete' customer.id %}">
+                                            <form method="post" action="{% url 'country_delete' country.id %}">
                                               {% csrf_token %}
                                               <button type="submit" class="btn btn-danger">Confirmer</button>
                                             </form>

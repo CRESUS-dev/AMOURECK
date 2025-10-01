@@ -30,12 +30,12 @@ class CustomLoginView(LoginView):
         selected_agency = form.cleaned_data.get('agency')
         # vérifier si l'utilisateur a des succursales assignées
         if not user.agencies.exists():
-            messages.error(self.request, "Vous n'êtes assigné à aucune succursale.")
+            messages.error(self.request, "Vous n'êtes assigné à aucune agence.")
             return redirect('login')
 
         # Vérifier si le pays est assignée à l'utilisateur
         if selected_agency and selected_agency not in user.agencies.all():
-            messages.error(self.request, "Vous n'avez pas à cette succursale.")
+            messages.error(self.request, "Vous n'êtes pas autorisé à accéder à cette agence.")
             return redirect("login")
 
         # Enregistrer l'agence dans la session
@@ -43,6 +43,7 @@ class CustomLoginView(LoginView):
             self.request.session['agency_id'] = selected_agency.id
             self.request.session['name'] = selected_agency.name
             self.request.session['country_id'] = selected_agency.country.id
+
 
         # vérifier l'option remember me
         if form.cleaned_data.get('remember_me'):

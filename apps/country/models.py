@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 # Create your models here.
 class Country(TimeStampedModel, NamedModel):
-
+    name = models.CharField(max_length=255, unique=False)
     class Meta:
         verbose_name = "Pays"
         verbose_name_plural = "Pays"
@@ -16,7 +16,7 @@ class Country(TimeStampedModel, NamedModel):
 
 
 class Town(TimeStampedModel, NamedModel):
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="villes")
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name="villes")
 
     class Meta:
         verbose_name = "Ville"
