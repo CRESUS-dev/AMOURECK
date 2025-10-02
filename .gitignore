@@ -8,7 +8,7 @@ __pycache__/
 db.sqlite3
 media/
 staticfiles/
-static
+
 # Eviter d’exposer les fichiers sensibles
 .env.local
 *.env
