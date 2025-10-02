@@ -1,0 +1,1 @@
+-bash: ./audit_amoureck.sh: Permission denied

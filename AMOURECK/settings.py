@@ -25,7 +25,7 @@ ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', "127.0.0.1").split(',')
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('SQL_ENGINE'),
+        'ENGINE': os.getenv('SQL_ENGINE','django.db.backends.postgresql').strip(),
         'NAME': os.getenv('SQL_DATABASE'),
         'USER': os.getenv('SQL_USER'),
         'PASSWORD': os.getenv('SQL_PASSWORD'),
