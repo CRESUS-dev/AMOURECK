@@ -9,12 +9,11 @@ from django.contrib.auth import authenticate
 class CustomLoginForm(AuthenticationForm):
     agency = forms.ModelChoiceField(
         queryset=Agency.objects.filter(is_active=1),
-        empty_label="",
+        empty_label="Cliquer pour sélectionner ",
         required=True,
         label="Succursale",
         widget=forms.Select(attrs={
             'class': 'form-control ',
-
 
         })
     )

@@ -17,9 +17,11 @@ class CustomLoginView(LoginView):
     # affichage du logo
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        enterprise = Enterprise.objects.first()  # récupérer la première entreprise
+        enterprise = Enterprise.objects.first()  # récupérer la première entreprise.
+
         if enterprise and enterprise.logo:
             context['logo'] = enterprise.logo.url  # récupérer l'URL de l'image
+
         else:
             context['logo'] = None
         return context

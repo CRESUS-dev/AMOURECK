@@ -1,8 +1,8 @@
 from django import forms
-from .models import Country
+from .models import Country, Town
 
 
-# formulaire de création des clients
+
 
 class CountryForm(forms.ModelForm):
     class Meta:
@@ -21,5 +21,25 @@ class CountryForm(forms.ModelForm):
             }),
         }
 
+class TownForm(forms.ModelForm):
+    class Meta:
+        model=Town
+        fields = ['name', 'country']
+        labels = {
+            'name':'Nom ville',
+            'country':'Pays'
+        }
 
+    widgets = {
+        'name': forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Entrer le nom de la ville',
+
+        }),
+        'country': forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder':'Sélectionner un pays'
+
+        }),
+    }
 

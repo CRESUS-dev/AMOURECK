@@ -2,7 +2,7 @@
 from .models import *
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CountryForm
+from .forms import CountryForm, TownForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import ProtectedError
@@ -47,3 +47,29 @@ class CountryDeleteView(LoginRequiredMixin, DeleteView):
             """ redirect to countries list in case of error"""
             return HttpResponseRedirect(self.success_url)
 
+
+class TownCreateView(LoginRequiredMixin, CreateView):
+    model = Town
+    form_class = TownForm
+    template_name = 'country/town_add.html'
+    success_url = reverse_lazy('towns_list')
+
+
+class TownListView(LoginRequiredMixin, ListView):
+    model = Town
+    template_name = 'country/town_list.html'
+    context_object_name = 'towns'
+    paginate_by = 10
+    ordering = ['name']
+
+
+class TownEditView(LoginRequiredMixin, UpdateView):
+    model = Town
+    form_class = TownForm
+    template_name = 'country/town_add.html'
+    success_url = reverse_lazy('towns_list')
+
+
+class TownDeleteView(LoginRequiredMixin, DeleteView):
+    model = Town
+    success_url = reverse_lazy('towns_list')
