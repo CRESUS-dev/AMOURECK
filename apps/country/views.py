@@ -2,7 +2,7 @@
 from .models import *
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CountryForm, TownForm
+from .forms import CountryForm, TownForm, AgencyForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import ProtectedError
@@ -73,3 +73,30 @@ class TownEditView(LoginRequiredMixin, UpdateView):
 class TownDeleteView(LoginRequiredMixin, DeleteView):
     model = Town
     success_url = reverse_lazy('towns_list')
+
+
+class AgencyCreateView(LoginRequiredMixin, CreateView):
+    model = Agency
+    form_class = AgencyForm
+    template_name = 'country/agency_add.html'
+    success_url = reverse_lazy('agencies_list')
+
+
+class AgencyListView(LoginRequiredMixin, ListView):
+    model = Agency
+    template_name = 'country/agency_list.html'
+    context_object_name = 'agencies'
+    paginate_by = 10
+    ordering = ['name']
+
+
+class AgencyEditView(LoginRequiredMixin, UpdateView):
+    model = Agency
+    form_class = AgencyForm
+    template_name = 'country/agency_add.html'
+    success_url = reverse_lazy('agencies_list')
+
+
+class AgencyDeleteView(LoginRequiredMixin, DeleteView):
+    model = Agency
+    success_url = reverse_lazy('agencies_list')

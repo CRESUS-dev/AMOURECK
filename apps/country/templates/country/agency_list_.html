@@ -1,0 +1,102 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+{% include 'messages.html' %}
+                    <div class="container-fluid px-4">
+
+                        <h2 class="mt-4">Liste des agences</h2>
+
+                        <hr>
+
+
+                    <a href="{% url 'agency_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une agence</a>
+
+                        <hr>
+                        <div class="row">
+
+                          <!-- Champ de recherche -->
+                           {% include 'search_form.html' %}
+
+                        <table class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col" >Nom </th>
+                              <th scope="col" >Pays </th>
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                                {% for agency in agencies %}
+                            <tr>
+                              <td >{{ agency.name }}</td>
+                              <td >{{ agency.country }}</td>
+
+
+                            <!-- Boutons CRUD -->
+                             <td >
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+{#                                {% if perms.products.change_product %}#}
+                                    <a href="{% url 'agency_edit' agency.id %}" class="btn btn-sm btn-warning">Modifier</a>
+
+        {#                                {% endif %}#}
+
+        {#                            {% if perms.products.delete_product %}#}
+                                <button
+                                   class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ agency.id }}">
+
+                                    Supprimer
+                                </button>
+{#                            {% endif %}#}
+                        </div>
+                            </td>
+                    </tr>
+
+
+
+                                <!-- Modale de confirmation -->
+                                    <div class="modal fade" id="deleteModal{{ agency.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ agency.id }}" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ agency.id }}">Confirmation de suppression</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            Êtes-vous sûr de vouloir supprimer l'agence <strong>{{agency.name }}</strong> ?
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+
+                                            <form method="post" action="{% url 'agency_delete' agency.id %}">
+                                              {% csrf_token %}
+                                              <button type="submit" class="btn btn-danger">Confirmer</button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                        </td>
+                            </tr>
+
+                                {% endfor %}
+
+                          </tbody>
+                        </table>
+                           {% include 'pagination.html' %}
+
+                        </div>
+
+                    </div>
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+
