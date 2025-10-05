@@ -4,7 +4,7 @@ from .models import Country, Town, Agency
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    fields = ('name',)
+    fields = ('name','iso_code','currency', 'is_active')
 
 
 @admin.register(Town)
@@ -14,4 +14,4 @@ class TownAdmin(admin.ModelAdmin):
 
 @admin.register(Agency)
 class AgencyAdmin(admin.ModelAdmin):
-    fields = ('name', 'country')
+    fields = ('name', 'country','code')
