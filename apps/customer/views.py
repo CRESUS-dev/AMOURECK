@@ -1,6 +1,7 @@
-
+from django.shortcuts import render
+from django.db.models import Q
 from .models import *
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomerForm
 from django.urls import reverse_lazy
@@ -60,11 +61,24 @@ class CustomerListView(LoginRequiredMixin, ListView):
     # fonction de recherche sur la liste.
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.GET.get('q')  # Récupérer la valeur du champ de recherche
-        if query:
-            queryset = queryset.filter(lastName__icontains=query)
+        q = self.request.GET.get('q')
+        if q:
+            queryset = queryset.filter(
+                Q(firstName__icontains=q) |
+                Q(lastName__icontains=q) |
+                Q(phone_number__icontains=q)
+            )
         return queryset
 
+
+class CustomerModalListView(LoginRequiredMixin, TemplateView):
+    template_name = "customer/customer_modal_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # On récupère tous les clients triés par lastName
+        context['customers'] = Customer.objects.all().order_by('lastName')
+        return context
 
 class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     model = Customer

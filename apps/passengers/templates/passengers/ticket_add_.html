@@ -1,0 +1,240 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h2 class="mt-4">Création d'un ticket</h2>
+        <hr>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                <form id="customerForm" method="post" class="shadow p-4 bg-light rounded">
+                    {% csrf_token %}
+
+                    <!-- Bouton de recherche client -->
+                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#customerModal">
+                        🔍 Rechercher un client
+                    </button>
+
+                    <!-- Champs client -->
+                    <div class="mb-3">
+                        <label for="firstname">Prénoms</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lastname">Nom</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone">Téléphone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" disabled>
+                    </div>
+
+                    <!-- Champs du formulaire Ticket -->
+                    <div class="mb-3">
+                        {{ form.departure_town.label_tag }}
+                        {{ form.departure_town }}
+                        {% if form.departure_town.errors %}
+                            <div class="text-danger">
+                                {{ form.departure_town.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.arrival_town.label_tag }}
+                        {{ form.arrival_town }}
+                        {% if form.arrival_town.errors %}
+                            <div class="text-danger">
+                                {{ form.arrival_town.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.departure_date.label_tag }}
+                        {{ form.departure_date }}
+                        {% if form.departure_date.errors %}
+                            <div class="text-danger">
+                                {{ form.departure_date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.departure_hour.label_tag }}
+                        {{ form.departure_hour }}
+                        {% if form.departure_hour.errors %}
+                            <div class="text-danger">
+                                {{ form.departure_hour.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.ticket_price.label_tag }}
+                        {{ form.ticket_price }}
+                        {% if form.ticket_price.errors %}
+                            <div class="text-danger">
+                                {{ form.ticket_price.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                     <div class="mb-3">
+                            {{ form.payment_method.label_tag }}
+                            {{ form.payment_method }}
+                            {% if form.payment_method.errors %}
+                                <div class="text-danger">
+                                    {{ form.payment_method.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                     <div class="mb-3">
+                        {{ form.mobile_money_phone_number.label_tag }}
+                        {{ form.mobile_money_phone_number }}
+                        {% if form.mobile_money_phone_number.errors %}
+                            <div class="text-danger">
+                                {{ form.mobile_money_phone_number.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Erreurs non liées à un champ -->
+                    {% for error in form.non_field_errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+
+
+
+                    <button type="submit" class="btn text-light w-100" style="background: #04414d">
+                        Enregistrer
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+<!-- Modal de sélection du client -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="customerModalLabel">🔍 Rechercher un client</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Champ de recherche -->
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher par nom, prénom ou téléphone...">
+
+        <!-- Tableau des clients -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle" id="customerTable">
+            <thead class="table-secondary">
+              <tr>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="customerTableBody">
+              {% for customer in customers %}
+              <tr>
+                <td>{{ customer.firstName }}</td>
+                <td>{{ customer.lastName }}</td>
+                <td>{{ customer.phone_number }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success selectCustomerBtn"
+                    data-firstname="{{ customer.firstName }}"
+                    data-lastname="{{ customer.lastName }}"
+                    data-phone="{{ customer.phone_number }}">
+                    Sélectionner
+                  </button>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted">Aucun client trouvé</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal de sélection du client -->
+<!-- Modal de recherche client -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="customerModalLabel">🔍 Rechercher un client</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Barre de recherche -->
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher par prénom, nom ou téléphone...">
+
+        <!-- Tableau des clients inclus depuis notre vue dédiée -->
+        {% include "customer/customer_modal_list.html" %}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // 🔍 Recherche instantanée dans le modal
+  document.getElementById('searchInput').addEventListener('keyup', function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#customerTableBody tr");
+
+    rows.forEach(row => {
+      let firstname = row.cells[0].textContent.toLowerCase();
+      let lastname = row.cells[1].textContent.toLowerCase();
+      let phone = row.cells[2].textContent.toLowerCase();
+
+      row.style.display = (firstname.includes(filter) || lastname.includes(filter) || phone.includes(filter)) ? '' : 'none';
+    });
+  });
+
+  // 🧩 Sélection d'un client
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('selectCustomerBtn')) {
+      let firstname = e.target.dataset.firstname;
+      let lastname = e.target.dataset.lastname;
+      let phone = e.target.dataset.phone;
+
+      document.getElementById('firstname').value = firstname;
+      document.getElementById('lastname').value = lastname;
+      document.getElementById('phone').value = phone;
+
+      // Fermer la modale
+      let modal = bootstrap.Modal.getInstance(document.getElementById('customerModal'));
+      modal.hide();
+    }
+  });
+</script>
+
+
+</main>
+{% endblock main %}

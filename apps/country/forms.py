@@ -7,7 +7,8 @@ from .models import Country, Town, Agency
 class CountryForm(forms.ModelForm):
     class Meta:
         model = Country
-        fields = ['name','is_active']
+        fields = ['name','iso_code','currency','is_active']
+
 
 
         widgets = {
@@ -15,9 +16,16 @@ class CountryForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder':'Entrer le nom du pays'
             }),
-            'is_active': forms.RadioSelect(attrs={
+            'iso_code': forms.TextInput(attrs={
                 'class': 'form-control',
-
+                'placeholder': 'Entrer le code ISO'
+            }),
+            'currency': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Entrer la devise'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',  # Bootstrap pour checkbox
             }),
         }
 
@@ -25,10 +33,10 @@ class TownForm(forms.ModelForm):
     class Meta:
         model=Town
         fields = ['name', 'country']
-        labels = {
-            'name':'Nom ville',
-            'country':'Pays'
-        }
+        # labels = {
+        #     'name':'Nom ville',
+        #     'country':'Pays'
+        # }
 
     widgets = {
         'name': forms.TextInput(attrs={
@@ -37,7 +45,7 @@ class TownForm(forms.ModelForm):
 
         }),
         'country': forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'placeholder':'Sélectionner un pays'
 
         }),
@@ -46,7 +54,7 @@ class TownForm(forms.ModelForm):
 class AgencyForm(forms.ModelForm):
     class Meta:
         model=Agency
-        fields = ['name', 'country']
+        fields = ['name', 'country', 'code']
         labels = {
             'name':'Nom agence',
             'country':'Pays'
@@ -59,8 +67,13 @@ class AgencyForm(forms.ModelForm):
 
         }),
         'country': forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'placeholder':'Sélectionner un pays'
+
+        }),
+        'code': forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': "Saisir le code de l'agence"
 
         }),
     }

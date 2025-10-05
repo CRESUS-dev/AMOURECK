@@ -45,6 +45,8 @@ class CustomLoginView(LoginView):
             self.request.session['agency_id'] = selected_agency.id
             self.request.session['name'] = selected_agency.name
             self.request.session['country_id'] = selected_agency.country.id
+            self.request.session['iso_code'] = selected_agency.country.iso_code
+
 
 
         # vérifier l'option remember me

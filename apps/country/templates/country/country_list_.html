@@ -21,15 +21,21 @@
                         <table class="table table-bordered table-striped">
                           <thead>
                             <tr>
-                              <th scope="col" >Nom </th>
-                       
+                              <th scope="col" >Nom Pays </th>
+                              <th scope="col" >Code ISO </th>
+                              <th scope="col" >Devise </th>
+                              <th scope="col" >Est actif </th>
+
                             </tr>
                           </thead>
                           <tbody>
                                 {% for country in countries %}
                             <tr>
                               <td >{{ country.name }}</td>
-                              
+                              <td >{{ country.iso_code }}</td>
+                              <td >{{ country.currency }}</td>
+                              <td >{{ country.is_active }}</td>
+
 
                             <!-- Boutons CRUD -->
                              <td >

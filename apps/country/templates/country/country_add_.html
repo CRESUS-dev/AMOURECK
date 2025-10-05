@@ -19,6 +19,33 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <div class="mb-3">
+                                {{ form.iso_code.label_tag }}
+                                {{ form.iso_code }}
+                                {% if form.iso_code.errors %}
+                                    <div class="text-danger">
+                                        {{ form.iso_code.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.currency.label_tag }}
+                                {{ form.currency }}
+                                {% if form.currency.errors %}
+                                    <div class="text-danger">
+                                        {{ form.currency.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.is_active.label_tag }}
+                                {{ form.is_active }}
+                                {% if form.is_active.errors %}
+                                    <div class="text-danger">
+                                        {{ form.is_active.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
 
 

@@ -55,6 +55,9 @@ class TownCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('towns_list')
 
 
+
+
+
 class TownListView(LoginRequiredMixin, ListView):
     model = Town
     template_name = 'country/town_list.html'

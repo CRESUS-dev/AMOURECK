@@ -8,6 +8,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import datetime
+from simple_history.models import HistoricalRecords
 import os
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class CustomUser(AbstractUser):
     countries = models.ManyToManyField(Country, blank=False, related_name="users_per_country")
     agencies = models.ManyToManyField(Agency, blank=False, related_name="users_per_agency")
     profil_picture = models.FileField(upload_to=profil_directory_path, blank=True, null=True)
-
+    history = HistoricalRecords()  # ajout de l'historique
     def is_admin(self):
         return self.is_superuser  # Vérifier si l'utilisateur est admin
 
