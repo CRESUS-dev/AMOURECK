@@ -16,7 +16,7 @@ class Customer(TimeStampedModel):
     )
 
     agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
-    code = models.CharField(max_length=50, unique=True, blank=False, null=True)
+    code = models.CharField(max_length=50, unique=True, blank=True)
     firstName = models.CharField(verbose_name="Prénoms", max_length=150, blank=False, null=False)
     lastName = models.CharField(verbose_name="Nom", max_length=150, blank=False, null=False)
     sex = models.CharField(verbose_name="Sexe", max_length=1, choices=SEXE_CHOICE, blank=False, null=False)
@@ -40,14 +40,18 @@ class Customer(TimeStampedModel):
         super().save(*args, **kwargs)
 
     def generate_code(self):
-        """Récupère le prochain numéro de la séquence de la branche et génère le code client"""
-        sequence_name = f"customer_code_seq_{self.agency.code.upper()}"
+        import re
+        from django.utils import timezone
+
+        safe_code = re.sub(r'[^A-Za-z0-9_]', '_', self.agency.code.upper())
+        sequence_name = f"customer_code_seq_{safe_code}"
+
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT nextval('{sequence_name}')")
             next_id = cursor.fetchone()[0]
+
         year = timezone.now().year
         return f"{self.agency.code}-{year}-{next_id:06d}"
-
 
     def __str__(self):
         return f"{self.lastName}  {self.firstName}"

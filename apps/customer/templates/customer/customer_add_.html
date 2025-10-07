@@ -10,6 +10,15 @@
                           <div class="col-md-6">
                             <form  id="customerForm" method="post" class="shadow p-4 bg-light rounded">
                                 {% csrf_token %}
+                             <div class="mb-3">
+                                {{ form.agency.label_tag }}
+                                {{ form.agency }}
+                                {% if form.agency.errors %}
+                                    <div class="text-danger">
+                                        {{ form.agency.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
                             <div class="mb-3">
                                 {{ form.lastName.label_tag }}
                                 {{ form.lastName }}

@@ -21,12 +21,15 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         country_id = self.request.session.get('country_id')
+        agency_id = self.request.session.get('agency_id')
+
         if not country_id:
             messages.error(self.request, "Aucun pays sélectionné en session.")
             return self.form_invalid(form)  # affiche l’erreur sur le même formulaire
 
         # Associer directement l’ID
         form.instance.country_id = country_id
+        
         return super().form_valid(form)
 
 

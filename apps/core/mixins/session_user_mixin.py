@@ -11,7 +11,7 @@ class SessionUserMixin(models.Model):
         null=True,
         blank=True
     )
-    agency_id = models.IntegerField(null=True, blank=True)
+
 
     class Meta:
         abstract = True  # Ne crée pas de table dans la BD

@@ -7,7 +7,7 @@ from .models import HistoricalCustomer
 
 @admin.register(Customer)
 class CustomerAdmin(SimpleHistoryAdmin):
-    list_display = ('firstName', 'lastName', 'sex', 'phone_number', 'email', 'IDCardNumber', 'address', 'country')
+    list_display = ('code','firstName', 'lastName', 'sex', 'phone_number', 'email', 'IDCardNumber', 'address', 'country','agency')
     list_filter = ('country',)
 
 

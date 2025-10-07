@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from apps.core.mixins.session_user_mixin import SessionUserMixin # custom mixin witch get user, agency_id
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
+import re
 
 # Dictionnaire pays -> devise
 
@@ -47,24 +48,22 @@ class Agency(TimeStampedModel, NamedModel):
         verbose_name_plural = "Agences"
         unique_together = ('name', 'country')
 
+    def created_agency_sequence(self):
+        """Crée une séquence PostgreSQL spécifique à cette branche si elle n'existe pas"""
+        # Nettoyage du code pour qu'il soit conforme au SQL identifier
+        safe_code = re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        sequence_name = f"customer_code_seq_{safe_code}"
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                CREATE SEQUENCE IF NOT EXISTS {sequence_name}
+                START 1 INCREMENT 1;
+            """)
+
     def save(self, *args, **kwargs):
         creating =self.pk is  None
         super().save(*args, **kwargs)
         if creating:
             self.created_agency_sequence()
-
-    def created_agency_sequence(self):
-        """Crée une séquence PostgreSQL spécifique à cette branche si elle n'existe pas"""
-        sequence_name = f"customer_code_seq_{self.code.upper()}"
-        with connection.cursor() as cursor:
-            cursor.execute(f"""
-                     CREATE SEQUENCE IF NOT EXISTS {sequence_name}
-                     START 1 INCREMENT 1;
-                 """)
-
-
-
-
 
     def __str__(self):
         return f"({self.country.name}) {self.name}"

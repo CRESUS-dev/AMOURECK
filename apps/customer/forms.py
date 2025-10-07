@@ -1,5 +1,6 @@
 from django import forms
 from .models import Customer
+from apps.country.models import Agency
 
 
 # formulaire de création des clients
@@ -7,10 +8,14 @@ from .models import Customer
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['firstName', 'lastName', 'sex', 'phone_number', 'email', 'IDCardNumber','address']
+        fields = ['agency','firstName', 'lastName', 'sex', 'phone_number', 'email', 'IDCardNumber','address']
         exclude = ['country']
 
+
         widgets = {
+            'agency': forms.Select(attrs={
+                'class': 'form-select'
+            }),
             'sex':forms.Select(attrs={
                 'class': 'form-select'
             }),
