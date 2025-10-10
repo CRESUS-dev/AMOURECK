@@ -116,6 +116,15 @@
                             </div>
                         {% endif %}
                     </div>
+                    <div class="mb-3" id="status">
+                        {{ form.status.label_tag }}
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-danger">
+                                {{ form.status.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <!-- Erreurs non liées à un champ -->
                     {% for error in form.non_field_errors %}

@@ -13,7 +13,11 @@ PAYMENT_METHOD =(
     ('CASH','Espèces'),
     ('CARD','Carte bancaire'),
     ('MM', 'Mobile Money')
+)
 
+STATUS =(
+    ('PAYE', 'Payé'),
+    ('NON PAYE', 'Non payé')
 )
 class Ticket(TimeStampedModel):
     agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
@@ -26,6 +30,7 @@ class Ticket(TimeStampedModel):
     ticket_price = MoneyField(verbose_name='Montant du billet', max_digits=12, decimal_places=0,default=Money(0, 'XOF'))
     payment_method = models.CharField(verbose_name="Mode de paiement", max_length=50, choices=PAYMENT_METHOD)
     mobile_money_phone_number=PhoneNumberField(verbose_name="Numéro Mobile Money", region="FR", unique=False, blank=True, null=True)
+    status = models.CharField(verbose_name="Statut", max_length= 15, choices=STATUS)
     history = HistoricalRecords()  # ajout de l'historique
 
 

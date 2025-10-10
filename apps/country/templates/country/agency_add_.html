@@ -38,6 +38,33 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <div class="mb-3">
+                                {{ form.address.label_tag }}
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger">
+                                        {{ form.address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.logo.label_tag }}
+                                {{ form.logo }}
+                                {% if form.logo.errors %}
+                                    <div class="text-danger">
+                                        {{ form.logo.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
 
 

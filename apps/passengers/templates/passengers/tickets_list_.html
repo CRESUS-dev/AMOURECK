@@ -21,6 +21,7 @@
                         <table class="table table-bordered table-striped">
                           <thead>
                             <tr>
+
                               <th scope="col" >Agence </th>
                               <th scope="col" >Code </th>
                               <th scope="col" >Client </th>
@@ -31,6 +32,7 @@
                               <th scope="col" >Prix </th>
                               <th scope="col" >Moyen de paiement </th>
                               <th scope="col" >N° Mobile Money </th>
+                              <th scope="col" >Statut</th>
                               <th scope="col" >Actions </th>
 
                             </tr>
@@ -38,6 +40,7 @@
                           <tbody>
                                 {% for ticket in tickets %}
                             <tr>
+
                               <td >{{ ticket.agency }}</td>
                               <td >{{ ticket.ticket_code }}</td>
                               <td >{{ ticket.customer }}</td>
@@ -48,6 +51,7 @@
                               <td >{{ ticket.ticket_price }}</td>
                               <td >{{ ticket.payment_method }}</td>
                               <td >{{ ticket.mobile_money_phone_number }}</td>
+                              <td style="color: {% if ticket.status == 'PAYE' %}green{% else %}red{% endif %};">{{ ticket.status }} </td>
 
 
                             <!-- Boutons CRUD -->
@@ -55,7 +59,8 @@
                                 <div class="d-flex flex-column flex-sm-row gap-2">
 {#                                {% if perms.products.change_product %}#}
                                     <a href="{% url 'ticket_edit' ticket.id %}" class="btn btn-sm btn-warning">Modifier</a>
-                                    <a href="{% url 'ticket_print' ticket.id %}" target="_blank" class="btn btn-sm btn-primary">Imprimer</a>
+                                    <a href="{% url 'ticket_print' ticket.id %}?preview=1" target="_blank" class="btn btn-sm btn-info">Aperçu</a>
+                                    <a href="{% url 'ticket_print' ticket.id %}" class="btn btn-sm btn-primary">Imprimer</a>
 
         {#                                {% endif %}#}
 

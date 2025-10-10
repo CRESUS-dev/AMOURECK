@@ -6,8 +6,10 @@ from apps.core.mixins.session_user_mixin import SessionUserMixin # custom mixin 
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
 import re
+import os
+from datetime import datetime
 from django.core.validators import RegexValidator
-
+from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import UniqueConstraint
 from psycopg2 import sql
 
@@ -42,11 +44,22 @@ class Town(TimeStampedModel, NamedModel, SessionUserMixin):
         return self.name
 
 
+def media_directory_path(instance, filename):
+    ext = filename.split('.')[-1]
+    base = os.path.splitext(filename)[0]  # nom sans extension
+    filename = f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.{ext}"
+    return f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{filename}"
+
+
 class Agency(TimeStampedModel, NamedModel):
     country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.CASCADE, related_name="agencies")
     code = models.CharField(max_length=10, unique=True, validators=[RegexValidator(
         r'^[A-Z0-9_]+$',"Seuls les caractères A-Z, 0-9 et _ sont autorisés pour le code d'agence."
     )])
+    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True)
+    phone = PhoneNumberField(verbose_name="Télephone", region="FR", unique=False,
+                                                 blank=True, null=True)
+    logo = models.FileField(upload_to=media_directory_path, blank=True, null=True)
     history = HistoricalRecords()  # ajout de l'historique
     class Meta:
         verbose_name = "Agence"

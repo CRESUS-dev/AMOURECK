@@ -21,6 +21,7 @@ class CustomLoginView(LoginView):
 
         if enterprise and enterprise.logo:
             context['logo'] = enterprise.logo.url  # récupérer l'URL de l'image
+            context['Name'] = enterprise.Name
 
         else:
             context['logo'] = None

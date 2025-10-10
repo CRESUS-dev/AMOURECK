@@ -1,3 +1,4 @@
+
 def user_context(request):
     full_name = "invité"
     name =""
@@ -9,3 +10,15 @@ def user_context(request):
         "user_full_name": full_name,
         "user_agency_name": name,
     }
+
+
+def enterprise_context(request):
+    enterprise_name= request.session.get('Name')
+
+    return {
+        "enterprise_name": enterprise_name
+    }
+
+
+
+

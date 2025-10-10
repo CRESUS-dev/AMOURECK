@@ -14,14 +14,16 @@ class TicketForm(forms.ModelForm):
             'ticket_price',
             'payment_method',
             'mobile_money_phone_number',
+            'status',
         ]
         widgets = {
             'departure_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'departure_hour': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'payment_method': forms.Select(attrs={'class': 'form-select'}),
+            'payment_method': forms.Select(attrs={'class': 'form-select select2'}),
             'mobile_money_phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'departure_town': forms.Select(attrs={'class': 'form-select'}),
-            'arrival_town': forms.Select(attrs={'class': 'form-select'}),
+            'departure_town': forms.Select(attrs={'class': 'form-select select2', 'data-placeholder': 'Choisir une ville...'}),
+            'status': forms.Select(attrs={'class': 'form-select select2'}),
+            'arrival_town': forms.Select(attrs={'class': 'form-select select2','data-placeholder': 'Choisir une ville...'}),
         }
 
     def __init__(self, *args, **kwargs):
