@@ -1,16 +1,13 @@
 {% extends 'base_.html' %}
-
-{% block navbar %} {% include 'navbar.html' %}
-
-{% endblock navbar %}
+{% block navbar %} {% include 'navbar.html' %}    {% endblock navbar %}
 
 {% block sidebar %}
-
     {% include 'sidebar.html' %}
 {% endblock sidebar %}
 
 {% block main %}
 
-    {% include 'main.html' %}
+    {% include 'passengers/tickets_list_.html' %}
 
 {% endblock main %}
+

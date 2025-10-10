@@ -1,4 +1,4 @@
-from django.db import models, connection
+from django.db import models, connection, transaction
 from apps.core.models import TimeStampedModel, NamedModel
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -6,8 +6,11 @@ from apps.core.mixins.session_user_mixin import SessionUserMixin # custom mixin 
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
 import re
+from django.core.validators import RegexValidator
 
-# Dictionnaire pays -> devise
+from django.db.models import UniqueConstraint
+from psycopg2 import sql
+
 
 
 # Create your models here.
@@ -41,12 +44,24 @@ class Town(TimeStampedModel, NamedModel, SessionUserMixin):
 
 class Agency(TimeStampedModel, NamedModel):
     country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.CASCADE, related_name="agencies")
-    code = models.CharField(max_length=10, unique=True)
+    code = models.CharField(max_length=10, unique=True, validators=[RegexValidator(
+        r'^[A-Z0-9_]+$',"Seuls les caractères A-Z, 0-9 et _ sont autorisés pour le code d'agence."
+    )])
     history = HistoricalRecords()  # ajout de l'historique
     class Meta:
         verbose_name = "Agence"
         verbose_name_plural = "Agences"
-        unique_together = ('name', 'country')
+        constraints = [
+            UniqueConstraint(fields=['name', 'country'],
+                             name="unique_agency_name_per_country")
+        ]
+
+    def save(self, *args, **kwargs):
+        creating = self._state.adding
+        super().save(*args, **kwargs)
+        if creating:
+            self.created_agency_sequence()
+            self.created_ticket_sequence()
 
     def created_agency_sequence(self):
         """Crée une séquence PostgreSQL spécifique à cette branche si elle n'existe pas"""
@@ -59,11 +74,17 @@ class Agency(TimeStampedModel, NamedModel):
                 START 1 INCREMENT 1;
             """)
 
-    def save(self, *args, **kwargs):
-        creating =self.pk is  None
-        super().save(*args, **kwargs)
-        if creating:
-            self.created_agency_sequence()
+    def created_ticket_sequence(self):
+        """séquence de création des code tickets"""
+        safe_code =re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        sequence_name = f"ticket_code_seq_{safe_code}"
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                CREATE SEQUENCE IF NOT EXISTS {sequence_name}
+                START 1 INCREMENT 1;
+            """)
+
+
 
     def __str__(self):
         return f"({self.country.name}) {self.name}"

@@ -41,7 +41,7 @@
                                 </a>
                                 <ul class="dropdown-menu w-100 animated-dropdown" aria-labelledby="dropdownMenuLink1">
 
-                                    <li><a class="dropdown-item" href="{% url 'ticket_add' %}">
+                                    <li><a class="dropdown-item" href="{% url 'ticket_list' %}">
                                         <i class="fas fa-globe fa-fw me-2 text-black"></i>
                                         Vente de ticket</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -91,12 +91,8 @@
                     
 
                     <div class="sb-sidenav-footer text-white" style="background:black ">
-                        {{ user.first_name }} {{ user.last_name }}
+                        {{ user_agency_name }} 
 
-
-{#                        <hr>#}
-{#                        récupération de la succursale à partir du context_processors#}
-{#                        {{ current_branch.description }}#}
 
                     </div>
                 </nav>

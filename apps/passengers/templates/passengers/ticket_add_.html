@@ -18,19 +18,34 @@
                     </button>
 
                     <!-- Champs client -->
+                <!-- Champ caché pour l'ID du client -->
+                <input type="hidden" id="customer_id" name="customer_id" value="{% if selected_customer %}{{ selected_customer.id }}{% endif %}">
+
+
+                 <div class="mb-3">
+                        <label for="code">Code</label>
+                        <input type="text" class="form-control" id="code" name="firstname"
+                               value = "{% if selected_customer %}{{ selected_customer.code }}{% endif %}"disabled>
+
+                 </div>
+
                     <div class="mb-3">
                         <label for="firstname">Prénoms</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname" disabled>
+                        <input type="text" class="form-control" id="firstname" name="firstname"
+                               value = "{% if selected_customer %}{{ selected_customer.firstName }}{% endif %}" disabled>
+
                     </div>
 
                     <div class="mb-3">
                         <label for="lastname">Nom</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname" disabled>
+                        <input type="text" class="form-control" id="lastname" name="lastname"
+                               value = "{% if selected_customer %}{{ selected_customer.lastName }}{% endif %}"disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="phone">Téléphone</label>
-                        <input type="text" class="form-control" id="phone" name="phone" disabled>
+                        <input type="text" class="form-control" id="phone" name="phone"
+                               value = "{% if selected_customer %}{{ selected_customer.phone_number }}{% endif %}"disabled>
                     </div>
 
                     <!-- Champs du formulaire Ticket -->
@@ -83,7 +98,7 @@
                             </div>
                         {% endif %}
                     </div>
-                     <div class="mb-3">
+                     <div class="mb-3" id="id_payment_method">
                             {{ form.payment_method.label_tag }}
                             {{ form.payment_method }}
                             {% if form.payment_method.errors %}
@@ -92,7 +107,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                     <div class="mb-3">
+                     <div class="mb-3" id="id_mobile_money_phone_number">
                         {{ form.mobile_money_phone_number.label_tag }}
                         {{ form.mobile_money_phone_number }}
                         {% if form.mobile_money_phone_number.errors %}
@@ -137,6 +152,8 @@
           <table class="table table-hover table-bordered align-middle" id="customerTable">
             <thead class="table-secondary">
               <tr>
+                <th>ID</th>
+                <th>Code</th>
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>Téléphone</th>
@@ -146,6 +163,8 @@
             <tbody id="customerTableBody">
               {% for customer in customers %}
               <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.code }}</td>
                 <td>{{ customer.firstName }}</td>
                 <td>{{ customer.lastName }}</td>
                 <td>{{ customer.phone_number }}</td>
@@ -153,6 +172,8 @@
                   <button
                     type="button"
                     class="btn btn-sm btn-success selectCustomerBtn"
+                    data-id="{{ customer.id }}"
+                    data-code="{{ customer.code }}"
                     data-firstname="{{ customer.firstName }}"
                     data-lastname="{{ customer.lastName }}"
                     data-phone="{{ customer.phone_number }}">
@@ -191,7 +212,7 @@
         <input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher par prénom, nom ou téléphone...">
 
         <!-- Tableau des clients inclus depuis notre vue dédiée -->
-        {% include "customer/customer_modal_list.html" %}
+{#        {% include "customer/customer_modal_list.html" %}#}
       </div>
 
       <div class="modal-footer">
@@ -203,37 +224,55 @@
 </div>
 
 <script>
-  // 🔍 Recherche instantanée dans le modal
-  document.getElementById('searchInput').addEventListener('keyup', function () {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#customerTableBody tr");
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const rows = document.querySelectorAll("#customerTableBody tr");
 
-    rows.forEach(row => {
-      let firstname = row.cells[0].textContent.toLowerCase();
-      let lastname = row.cells[1].textContent.toLowerCase();
-      let phone = row.cells[2].textContent.toLowerCase();
+    // 🔍 Recherche instantanée
+    searchInput.addEventListener('keyup', function () {
+      const filter = this.value.toLowerCase();
+      rows.forEach(row => {
+        const code = row.cells[1].textContent.toLowerCase();
+        const firstname = row.cells[2].textContent.toLowerCase();
+        const lastname = row.cells[3].textContent.toLowerCase();
+        const phone = row.cells[4].textContent.toLowerCase();
 
-      row.style.display = (firstname.includes(filter) || lastname.includes(filter) || phone.includes(filter)) ? '' : 'none';
+        row.style.display = (
+          code.includes(filter) ||
+          firstname.includes(filter) ||
+          lastname.includes(filter) ||
+          phone.includes(filter)
+        ) ? '' : 'none';
+      });
+    });
+
+    // 🧩 Sélection d'un client
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('selectCustomerBtn')) {
+        const id = e.target.dataset.id;
+        const code = e.target.dataset.code;
+        const firstname = e.target.dataset.firstname;
+        const lastname = e.target.dataset.lastname;
+        const phone = e.target.dataset.phone;
+
+        // ✅ Remplir les champs
+        document.getElementById('customer_id').value = id;
+        document.getElementById('code').value = code;
+        document.getElementById('firstname').value = firstname;
+        document.getElementById('lastname').value = lastname;
+        document.getElementById('phone').value = phone;
+
+        // ✅ Fermer la modale
+        const modalEl = document.getElementById('customerModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+      }
     });
   });
-
-  // 🧩 Sélection d'un client
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('selectCustomerBtn')) {
-      let firstname = e.target.dataset.firstname;
-      let lastname = e.target.dataset.lastname;
-      let phone = e.target.dataset.phone;
-
-      document.getElementById('firstname').value = firstname;
-      document.getElementById('lastname').value = lastname;
-      document.getElementById('phone').value = phone;
-
-      // Fermer la modale
-      let modal = bootstrap.Modal.getInstance(document.getElementById('customerModal'));
-      modal.hide();
-    }
-  });
 </script>
+
+
+
 
 
 </main>

@@ -47,6 +47,12 @@ class CustomLoginView(LoginView):
             self.request.session['country_id'] = selected_agency.country.id
             self.request.session['iso_code'] = selected_agency.country.iso_code
 
+            country = Country.objects.get(pk=selected_agency.country.id)
+            currency = country.currency
+            self.request.session['currency'] = currency
+
+
+
 
 
         # vérifier l'option remember me

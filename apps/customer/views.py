@@ -29,6 +29,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
         # Associer directement l’ID
         form.instance.country_id = country_id
+        form.instance.agency_id = agency_id
         
         return super().form_valid(form)
 

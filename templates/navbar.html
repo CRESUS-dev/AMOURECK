@@ -9,17 +9,25 @@
             <button class="btn btn-link btn-sm me-2" id="sidebarToggle">
                 <i class="fas fa-bars"></i>
             </button>
-
+    
             <!-- Navbar Brand -->
             {% if perms.users.can_view_dashboard %}
-                <a class="navbar-brand ps-1" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="navbar-brand ps-1" href="{% url 'dashboard' %}">Dashboard </a>
+               
+                
             {% endif %}
-
+        
+            
 
         </div>
-   {% block scrolling_text %}
-       
-    {% endblock scrolling_text %}
+
+    {% block scrolling_text %}
+    <div class="navbar-text text-warning fw-bold ">
+        <span>
+            👋 Bienvenue {{ user_full_name }}, Vous êtes connecté(e) à l'agence {{ user_agency_name }}
+        </span>
+    </div>
+{% endblock scrolling_text %}
     
     </div>
 </nav>
