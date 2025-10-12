@@ -1,5 +1,5 @@
 from .models import *
-
+from apps.country.models import *
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TicketForm
@@ -72,6 +72,14 @@ class TicketListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     ordering = ['agency']
 
+
+    def get_context_data(self, **kwargs):
+        """injecter la liste des agences dans le context"""
+        context = super().get_context_data(**kwargs)
+        agencies = Agency.objects.order_by('name').distinct()
+        context['agencies'] = agencies
+        return context
+
 class TicketEditView(LoginRequiredMixin, UpdateView):
     model = Ticket
     form_class = TicketForm
@@ -128,6 +136,11 @@ def ticket_render_pdf_view(request, *args, **kwargs):
 
     template_path = 'passengers/ticket_pdf_print.html'
 
+    #  Nettoyer les None → chaîne vide
+    clean_ticket = {}
+    for field, value in ticket.__dict__.items():
+        clean_ticket[field] = "" if value is None  or str(value).lower() == "none" else value
+
     # Construction du chemin complet du logo
     logo_url = ''
     if ticket.agency.logo:
@@ -138,6 +151,7 @@ def ticket_render_pdf_view(request, *args, **kwargs):
     context = {
         'ticket': ticket,
         'logo_url': logo_url,
+        'clean_ticket':clean_ticket
 
     }
 

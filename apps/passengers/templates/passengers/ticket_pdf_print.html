@@ -20,7 +20,7 @@
             background: #deedf5;
             border-radius: 5px;
             border: solid 1px #6c757d;
-            padding: 20px;
+            padding: 5px;
             margin-top: 5px;
             text-align: center;
              color: #004364;
@@ -41,8 +41,8 @@
             {#border: solid 1px #004364;#}
             {#border-radius: 5px;#}
             {#background: #deedf5;#}
-            margin-top: 10px;
-            padding: 10px;
+            {#margin-top: 5px;#}
+            {#padding: 5px;#}
             color: #004364;
             font-weight: bold;
         }
@@ -51,10 +51,10 @@
         }
 
 
-        .details { margin-top: 20px; }
+        .details { margin-top: 5px; }
          h4 {text-align: left;}
 
-        .footer { text-align: center; margin-top: 20px; font-size: 9px; color: #004364; }
+        .footer { text-align: center; margin-top: 5px; font-size: 9px; color: #004364; }
 
 
     </style>
@@ -108,8 +108,7 @@
 
 
 
-        <h3 class="title" style="margin-top:20px;" >Détails du voyage</h3>
-        <br>
+        <h3 class="title">Détails du voyage</h3>
             <div  class="details-voyage">
                 <p>Ville de départ: {{ ticket.departure_town }}</p>
                 <p>Ville d'arrivée: {{ ticket.arrival_town }}</p>
@@ -122,7 +121,7 @@
 
 
     </div>
-hr
+    <hr>
     <div class="footer">
         <p>Merci d’avoir choisi  <strong>AMOURECK Voyage </strong> </p>
         <p>Ce document confirme votre réservation. Conservez-le précieusement.</p>

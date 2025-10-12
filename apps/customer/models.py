@@ -20,10 +20,10 @@ class Customer(TimeStampedModel):
     firstName = models.CharField(verbose_name="Prénoms", max_length=150, blank=False, null=False)
     lastName = models.CharField(verbose_name="Nom", max_length=150, blank=False, null=False)
     sex = models.CharField(verbose_name="Sexe", max_length=1, choices=SEXE_CHOICE, blank=False, null=False)
-    phone_number = PhoneNumberField(verbose_name="Télephone", region="FR", unique=True)
-    email = models.EmailField(blank=True)
-    IDCardNumber = models.CharField(verbose_name="N° pièce d'identificaiton", max_length=100, blank=True, null=True,                              unique=True)
-    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True)
+    phone_number = PhoneNumberField(verbose_name="Télephone", region="FR", unique=True,default="")
+    email = models.EmailField(blank=True,default="")
+    IDCardNumber = models.CharField(verbose_name="N° pièce d'identificaiton", max_length=100, blank=True, null=True,  unique=True,default="")
+    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True,default="")
     country = models.ForeignKey( Country, on_delete=models.CASCADE,verbose_name="Pays")
     history = HistoricalRecords()  # ajout de l'historique
 

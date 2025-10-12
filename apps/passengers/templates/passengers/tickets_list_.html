@@ -16,42 +16,91 @@
                         <div class="row">
 
                           <!-- Champ de recherche -->
-                           {% include 'search_form.html' %}
+                         <div class="justify-content-center " style="background: #eae8e8; border-radius:10px">
+                            <div class="row mb-3 " >
+                            <div class="col-md-3">
+                                    <label for="startDate" class="form-label">📅 Date début</label>
+                                    <input type="date" id="startDate" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                    <label for="endDate" class="form-label">📅 Date fin</label>
+                                    <input type="date" id="endDate" class="form-control">
+                            </div>
+                         </div>
 
+                            <div class="row mb-3">
+                            <div class="col-md-3">
+                                 <input type="text" id="searchinput" class="form-control mb-3" placeholder="🔍 Recherche par Nom, prénoms, Tél">
+                            </div>
+                            <div class="col-md-3">
+                                <select  id="filterAgency" class="form-select ">
+                                    <option value="">🏬Toutes les agences</option>
+                                    {% for agency in agencies %}
+                                        <option value="{{ agency.name | lower }}">{{ agency.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select  id="statut" class="form-select">
+                                    <option value="">Statut</option>
+                                    <option value="PAYE">PAYE</option>
+                                    <option value="NON_PAYE">NON_PAYE</option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
                         <table class="table table-bordered table-striped">
                           <thead>
                             <tr>
 
-                              <th scope="col" >Agence </th>
+                              <th scope="col" class="d-none d-md-table-cell">Agence </th>
                               <th scope="col" >Code </th>
                               <th scope="col" >Client </th>
                               <th scope="col" >Ville de départ </th>
                               <th scope="col" >Ville d'arrivée </th>
                               <th scope="col" >Date départ </th>
-                              <th scope="col" >Heure départ </th>
+                              <th scope="col" class="d-none d-md-table-cell">Heure départ </th>
                               <th scope="col" >Prix </th>
-                              <th scope="col" >Moyen de paiement </th>
-                              <th scope="col" >N° Mobile Money </th>
-                              <th scope="col" >Statut</th>
+                              <th scope="col" class="d-none d-md-table-cell">Moyen de paiement </th>
+                              <th scope="col" class="d-none d-md-table-cell">N° Mobile Money </th>
+
+                              <th scope="col" > Date</th>
+                                <th scope="col" >Statut</th>
                               <th scope="col" >Actions </th>
 
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody id="TicketTableBody">
                                 {% for ticket in tickets %}
                             <tr>
 
-                              <td >{{ ticket.agency }}</td>
-                              <td >{{ ticket.ticket_code }}</td>
-                              <td >{{ ticket.customer }}</td>
-                              <td >{{ ticket.departure_town }}</td>
-                              <td >{{ ticket.arrival_town }}</td>
-                              <td >{{ ticket.departure_date }}</td>
-                              <td >{{ ticket.departure_hour }}</td>
-                              <td >{{ ticket.ticket_price }}</td>
-                              <td >{{ ticket.payment_method }}</td>
-                              <td >{{ ticket.mobile_money_phone_number }}</td>
-                              <td style="color: {% if ticket.status == 'PAYE' %}green{% else %}red{% endif %};">{{ ticket.status }} </td>
+                              <td data-field="agency" class="d-none d-md-table-cell" >{{ ticket.agency }}</td>
+                              <td data-field="ticket_code" >{{ ticket.ticket_code }}</td>
+                              <td data-field="customer" >{{ ticket.customer }}</td>
+                              <td data-field="departure_town" >{{ ticket.departure_town }}</td>
+                              <td data-field="arrival_town" >{{ ticket.arrival_town }}</td>
+                              <td data-field="departure_date" >{{ ticket.departure_date }}</td>
+                              <td data-field="departure_hour" class="d-none d-md-table-cell">{{ ticket.departure_hour }}</td>
+                              <td data-field="ticket_price" >{{ ticket.ticket_price }}</td>
+                              <td data-field="payment_method" class="d-none d-md-table-cell">{{ ticket.payment_method |default_if_none:"" }}</td>
+                              <td data-field="mobile_money_phone_number" class="d-none d-md-table-cell">{{ ticket.mobile_money_phone_number |default_if_none:""  }}</td>
+
+                                <td data-field="updated_at"  class="d-none d-md-table-cell">{{ ticket.updated_at|date:"Y-m-d" }}</td>
+                                   <td data-field="status">
+                                {% if ticket.status == "PAYE" %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-circle-check me-1"></i> Payé
+                                    </span>
+                                {% elif ticket.status == "NON_PAYE" %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-circle-xmark me-1"></i> Non payé
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i> En attente
+                                    </span>
+                                {% endif %}
+</td>
 
 
                             <!-- Boutons CRUD -->
@@ -114,6 +163,122 @@
                         </div>
 
                     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchinput = document.getElementById('searchinput');
+    const filterAgency = document.getElementById('filterAgency');
+    const filterStatut = document.getElementById('statut');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const rows = document.querySelectorAll('#TicketTableBody tr');
+
+    // 🔧 Normalisation
+    function normalizeText(text) {
+        return (text || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    // Convertit un texte en token standard (pour statut)
+    function toToken(text) {
+        return normalizeText(text).replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    }
+
+    // ✨ Surbrillance
+    function highlightText(element, query) {
+        if (!element) return;
+        const raw = element.textContent;
+        if (!query) { element.innerHTML = raw; return; }
+        const regex = new RegExp(`(${query})`, 'gi');
+        element.innerHTML = raw.replace(regex, '<mark>$1</mark>');
+    }
+
+    // 🧮 Filtrage principal
+    function applyFilters() {
+        const q = normalizeText(searchinput.value);
+        const selectedAgency = normalizeText(filterAgency.value);
+        const selectedStatut = toToken(filterStatut.value);
+
+        // 📅 Dates
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+        rows.forEach(row => {
+            const agency = row.querySelector('[data-field="agency"]');
+            const ticket_code = row.querySelector('[data-field="ticket_code"]');
+            const status = row.querySelector('[data-field="status"]');
+            const customer = row.querySelector('[data-field="customer"]');
+            const phone = row.querySelector('[data-field="mobile_money_phone_number"]');
+            const updated_at = row.querySelector('[data-field="updated_at"]');
+
+            const agencyText = normalizeText(agency?.textContent);
+            const statusToken = toToken(status?.textContent);
+            const ticketCodeText = normalizeText(ticket_code?.textContent);
+            const customerText = normalizeText(customer?.textContent);
+            const phoneText = normalizeText(phone?.textContent);
+            const updatedDate = updated_at ? new Date(updated_at.textContent.trim()) : null;
+
+            // 🔍 Recherche texte
+            const matchesSearch =
+                customerText.includes(q) ||
+                ticketCodeText.includes(q) ||
+                phoneText.includes(q);
+
+            // 🏬 Filtre agence
+            let matchesAgency = true;
+            if (selectedAgency) {
+                matchesAgency = agencyText.includes(selectedAgency);
+            }
+
+            // 💰 Filtre statut
+            let matchesStatut = true;
+            if (selectedStatut) {
+                matchesStatut = (statusToken === selectedStatut);
+            }
+
+            // 📅 Filtre de date
+            let matchesDate = true;
+            if (startDate && updatedDate && updatedDate < startDate) {
+                matchesDate = false;
+            }
+            if (endDate && updatedDate && updatedDate > endDate) {
+                matchesDate = false;
+            }
+
+            // ✅ Condition finale
+            const match = matchesSearch && matchesAgency && matchesStatut && matchesDate;
+            row.style.display = match ? '' : 'none';
+
+            [customer, phone, agency, ticket_code].forEach(cell => {
+                if (cell) highlightText(cell, q);
+            });
+        });
+    }
+
+    // 🎯 Événements
+    [searchinput, filterAgency, filterStatut, startDateInput, endDateInput].forEach(el => {
+        el.addEventListener('change', applyFilters);
+        el.addEventListener('keyup', applyFilters);
+    });
+
+    // ⚙️ Compatibilité Select2
+    if (window.jQuery && jQuery.fn && jQuery.fn.select2) {
+        jQuery(filterAgency).on('select2:select select2:clear', applyFilters);
+        jQuery(filterStatut).on('select2:select select2:clear', applyFilters);
+    }
+
+    // Initialisation
+    applyFilters();
+});
+</script>
+
+
+
+
+
                 </main>
 
 {% endblock main %}

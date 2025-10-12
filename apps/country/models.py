@@ -19,7 +19,7 @@ from psycopg2 import sql
 class Country(TimeStampedModel, NamedModel, SessionUserMixin):
     name = models.CharField(verbose_name="Nom", max_length=255, unique=True)
     iso_code= models.CharField(verbose_name="Code ISO du pays", max_length=2,blank=False, null=False, unique=True)
-    currency = models.CharField(verbose_name="Devise",max_length=10)
+    currency = models.CharField(verbose_name="Devise",max_length=10, blank=False, null=False)
     is_active = models.BooleanField(default=False)
     history = HistoricalRecords()  # ajout de l'historique
     class Meta:
@@ -32,7 +32,7 @@ class Country(TimeStampedModel, NamedModel, SessionUserMixin):
 
 
 class Town(TimeStampedModel, NamedModel, SessionUserMixin):
-    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.PROTECT, related_name="villes")
+    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.PROTECT, related_name="villes", blank=False, null=False)
     history = HistoricalRecords()  # ajout de l'historique
     class Meta:
         verbose_name = "Ville"
@@ -52,13 +52,13 @@ def media_directory_path(instance, filename):
 
 
 class Agency(TimeStampedModel, NamedModel):
-    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.CASCADE, related_name="agencies")
-    code = models.CharField(max_length=10, unique=True, validators=[RegexValidator(
+    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.CASCADE, related_name="agencies",blank=False, null=False)
+    code = models.CharField(max_length=10, unique=True,blank=False, null=False, validators=[RegexValidator(
         r'^[A-Z0-9_]+$',"Seuls les caractères A-Z, 0-9 et _ sont autorisés pour le code d'agence."
     )])
-    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True)
+    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True,default="")
     phone = PhoneNumberField(verbose_name="Télephone", region="FR", unique=False,
-                                                 blank=True, null=True)
+                                                 blank=True, null=True,default="")
     logo = models.FileField(upload_to=media_directory_path, blank=True, null=True)
     history = HistoricalRecords()  # ajout de l'historique
     class Meta:
@@ -98,6 +98,5 @@ class Agency(TimeStampedModel, NamedModel):
             """)
 
 
-
     def __str__(self):
-        return f"({self.country.name}) {self.name}"
+        return self.name

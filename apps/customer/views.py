@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
+from apps.country.models import *
 
 
 
@@ -62,17 +63,15 @@ class CustomerListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     ordering = ['lastName']
 
-    # fonction de recherche sur la liste.
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        q = self.request.GET.get('q')
-        if q:
-            queryset = queryset.filter(
-                Q(firstName__icontains=q) |
-                Q(lastName__icontains=q) |
-                Q(phone_number__icontains=q)
-            )
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['countries'] = Country.objects.order_by("name").distinct()
+        context['towns'] = Town.objects.order_by("name").distinct()
+        return context
+
+
+
+
 
 
 class CustomerModalListView(LoginRequiredMixin, TemplateView):
