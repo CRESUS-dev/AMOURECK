@@ -55,7 +55,24 @@ INSTALLED_APPS = [
     "apps.passengers",
     "simple_history",
     'django_select2',
+    "apps.package",
+    "apps.chat",
+    "django_extensions",
+    "channels",
+
+
 ]
+
+# Dev: mémoire (suffisant en local)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+
+
+ASGI_APPLICATION = "AMOURECK.asgi.application"
 
 MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",

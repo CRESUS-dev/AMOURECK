@@ -6,11 +6,13 @@ from django.urls import path, include
 
 urlpatterns = [
     path("rollback/", admin.site.urls),
+    path('chat/', include('apps.chat.urls')),
     path('', include('apps.dashboard.urls')),
     path('', include('apps.accounts.urls')),
     path('', include('apps.customer.urls')),
     path('', include('apps.country.urls')),
     path('', include('apps.passengers.urls')),
+
 ]
 
 if settings.DEBUG:

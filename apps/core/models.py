@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 import os
 from datetime import datetime
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.conf import settings
 
 

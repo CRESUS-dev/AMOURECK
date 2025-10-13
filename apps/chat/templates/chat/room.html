@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat – {{ room_details.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #ece5dd;
+        font-family: Arial, sans-serif;
+    }
+
+    .chat-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .chat-header {
+        background: #075E54;
+        color: white;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    /* ✅ Le conteneur principal des messages */
+    #messages {
+        flex: 1;
+        display: flex;                /* ✅ active l’align-self */
+        flex-direction: column;       /* ✅ messages empilés verticalement */
+        justify-content: flex-start;
+        align-items: flex-start;      /* par défaut */
+        padding: 15px;
+        overflow-y: auto;
+        background: #e5ddd5;
+    }
+
+    /* ✅ Style général des messages */
+    .message {
+        max-width: 70%;
+        margin: 6px 0;
+        padding: 10px 15px;
+        border-radius: 10px;
+        word-wrap: break-word;
+        font-size: 0.95rem;
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    /* ✅ Tes messages → à droite */
+    .sent {
+        background: #dcf8c6;
+        align-self: flex-end;         /* clé de l’alignement */
+        border-bottom-right-radius: 0;
+        text-align: right;
+    }
+
+    /* ✅ Messages reçus → à gauche */
+    .received {
+        background: white;
+        align-self: flex-start;
+        border-bottom-left-radius: 0;
+        text-align: left;
+    }
+
+    .meta {
+        font-size: 0.75em;
+        color: #777;
+        margin-top: 4px;
+    }
+
+    .chat-footer {
+        background: #f0f0f0;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .input-group input {
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        padding-left: 15px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    #messages > .message { display: inline-block; }
+
+</style>
+
+
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h5>{{ room_details.name }}</h5>
+        <small>Connecté en tant que <strong>{{ username }}</strong></small>
+    </div>
+
+    <!-- ✅ Le conteneur flex des messages -->
+    <div id="messages"></div>
+
+    <div class="chat-footer">
+        <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        <div class="input-group">
+            <button id="imageBtn" class="btn btn-outline-secondary">📷</button>
+            <input type="text" id="messageInput" class="form-control" placeholder="Écrivez un message...">
+            <button id="sendBtn" class="btn btn-success">➤</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+const room = "{{ room }}";
+const username = ("{{ username }}").trim().toLowerCase();
+const messagesDiv = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const imageInput = document.getElementById("imageInput");
+const imageBtn = document.getElementById("imageBtn");
+
+
+// 🔹 Fonction d’affichage unique pour tous les messages
+function addMessageBubble(msg) {
+    const div = document.createElement("div");
+
+    // ✅ Vérifie correctement l’auteur du message
+    const msgUser = (msg.user || "").trim().toLowerCase();
+    const isMine = msgUser === username;
+
+    // ✅ applique les bonnes classes
+    div.classList.add("message");
+    div.classList.add(isMine ? "sent" : "received");
+
+    // ✅ Texte
+    if (msg.value) {
+        const text = document.createElement("div");
+        text.textContent = msg.value;
+        div.appendChild(text);
+    }
+
+    // ✅ Image
+    if (msg.image) {
+        const img = document.createElement("img");
+        img.src = msg.image;
+        img.classList.add("img-fluid", "rounded", "mt-2");
+        img.style.maxWidth = "250px";
+        div.appendChild(img);
+    }
+
+    // ✅ Infos auteur + heure
+    const meta = document.createElement("div");
+    meta.classList.add("meta");
+    meta.textContent = `${msg.user} • ${msg.created}`;
+    div.appendChild(meta);
+
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// 🔹 Charge l’historique au démarrage
+function loadHistory() {
+    fetch(`/chat/getMessages/${room}/`)
+        .then(r => r.json())
+        .then(data => {
+            messagesDiv.innerHTML = "";
+            data.messages.forEach(msg => addMessageBubble(msg));  // ✅ bien ici
+        })
+        .catch(err => console.error("Erreur historique :", err));
+}
+
+// 🔹 WebSocket
+const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+const socket = new WebSocket(`${wsScheme}://${window.location.host}/ws/chat/${room}/`);
+
+socket.onopen = () => console.log("✅ WebSocket connecté");
+socket.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    addMessageBubble(msg); // ✅ mêmes règles pour WS
+};
+socket.onclose = () => console.warn("⚠️ WebSocket déconnecté");
+
+// 🔹 Envoi texte
+sendBtn.addEventListener("click", sendMessage);
+messageInput.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+
+function sendMessage() {
+    const value = messageInput.value.trim();
+    if (!value) return;
+    socket.send(JSON.stringify({ username, message: value }));
+    messageInput.value = "";
+}
+
+// 🔹 Envoi image
+imageBtn.addEventListener("click", () => imageInput.click());
+imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        socket.send(JSON.stringify({ username, message: "", image: reader.result }));
+        imageInput.value = "";
+    };
+    reader.readAsDataURL(file);
+});
+
+// 🚀 Lancer le chargement au démarrage
+loadHistory();
+</script>
+
+
+</body>
+</html>
