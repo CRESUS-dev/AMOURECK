@@ -1,0 +1,37 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+                    <div class="container-fluid px-4">
+                        <h2 class="mt-4">Fiche client</h2>
+
+                        <hr>
+                        <div class="row justify-content-center">
+                          <div class="col-md-6 shadow p-4 bg-light rounded">
+                            <p><strong>Agence :</strong> {{ customer.agency }}</p>
+                            <p><strong>Code Client :</strong> {{ customer.code }}</p>
+                            <p><strong>Nom & Prénoms:</strong> {{ customer.firstName }} {{ customer.lastName }}</p>
+                            <p><strong>Genre :</strong> {{ customer.sex }}</p>
+                            <p><strong>Email :</strong> {{ customer.email }}</p>
+                            <p><strong>Téléphone :</strong> {{ customer.phone_number }}</p>
+                            <p><strong>Numéro pièce d'identité :</strong> {{ customer.IDCardNumber }}</p>
+                            <p><strong>Adresse:</strong> {{ customer.address }}</p>
+
+
+                            <a href="{% url 'customers_list' %}" class="btn btn-outline-success">Retour à la liste</a>
+
+
+                        </div>
+                    </div>
+                    </div>
+
+
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+

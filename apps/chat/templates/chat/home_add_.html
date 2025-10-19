@@ -1,0 +1,97 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+                    <div class="container-fluid px-4">
+                        <h2 class="mt-4">Création d'une agence</h2>
+
+                        <hr>
+                        <div class="row justify-content-center">
+                          <div class="col-md-6">
+                            <form  id="customerForm" method="post" class="shadow p-4 bg-light rounded">
+                                {% csrf_token %}
+                              <div class="mb-3">
+                                {{ form.country.label_tag }}
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <div class="text-danger">
+                                        {{ form.country.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.name.label_tag }}
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger">
+                                        {{ form.name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.code.label_tag }}
+                                {{ form.code }}
+                                {% if form.code.errors %}
+                                    <div class="text-danger">
+                                        {{ form.code.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.address.label_tag }}
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger">
+                                        {{ form.address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.logo.label_tag }}
+                                {{ form.logo }}
+                                {% if form.logo.errors %}
+                                    <div class="text-danger">
+                                        {{ form.logo.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+
+
+
+
+
+
+                    <button type="submit" class="btn  text-light w-100" style="background: #04414d">Enregistrer</button>
+
+                            {% for error in form.non_field_errors %}
+        <div style="color: red;">{{ error }}</div>
+    {% endfor %}
+                            </form>
+
+                        </div>
+                    </div>
+                    </div>
+
+<script>
+
+</script>
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+
