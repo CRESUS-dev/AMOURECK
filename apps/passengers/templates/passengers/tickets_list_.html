@@ -107,9 +107,11 @@
                              <td >
                                 <div class="d-flex flex-column flex-sm-row gap-2">
 {#                                {% if perms.products.change_product %}#}
+                                    <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-sm btn-info">Voir Ticket</a>
                                     <a href="{% url 'ticket_edit' ticket.id %}" class="btn btn-sm btn-warning">Modifier</a>
                                     <a href="{% url 'ticket_print' ticket.id %}?preview=1" target="_blank" class="btn btn-sm btn-info">Aperçu</a>
                                     <a href="{% url 'ticket_print' ticket.id %}" class="btn btn-sm btn-primary">Imprimer</a>
+
 
         {#                                {% endif %}#}
 

@@ -5,12 +5,12 @@
 {% include 'messages.html' %}
                     <div class="container-fluid px-4">
 
-                        <h2 class="mt-4">Situation des ventes de ticket</h2>
+                        <h2 class="mt-4">Situation des envois de colis</h2>
 
                         <hr>
 
 
-                    <a href="{% url 'ticket_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une ticket</a>
+                    <a href="{% url 'package_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un colis</a>
 
                         <hr>
                         <div class="row">
@@ -58,9 +58,8 @@
                               <th scope="col" >Client </th>
                               <th scope="col" >Ville de départ </th>
                               <th scope="col" >Ville d'arrivée </th>
-                              <th scope="col" >Date départ </th>
-                              <th scope="col" class="d-none d-md-table-cell">Heure départ </th>
                               <th scope="col" >Prix </th>
+                              <th scope="col" >Description </th>
                               <th scope="col" class="d-none d-md-table-cell">Moyen de paiement </th>
                               <th scope="col" class="d-none d-md-table-cell">N° Mobile Money </th>
 
@@ -68,30 +67,31 @@
                                 <th scope="col" >Statut</th>
                               <th scope="col" >Actions </th>
 
+
+
                             </tr>
                           </thead>
-                          <tbody id="TicketTableBody">
-                                {% for ticket in tickets %}
+                          <tbody id="packageTableBody">
+                                {% for package in packages %}
                             <tr>
 
-                              <td data-field="agency" class="d-none d-md-table-cell" >{{ ticket.agency }}</td>
-                              <td data-field="ticket_code" >{{ ticket.ticket_code }}</td>
-                              <td data-field="customer" >{{ ticket.customer }}</td>
-                              <td data-field="departure_town" >{{ ticket.departure_town }}</td>
-                              <td data-field="arrival_town" >{{ ticket.arrival_town }}</td>
-                              <td data-field="departure_date" >{{ ticket.departure_date }}</td>
-                              <td data-field="departure_hour" class="d-none d-md-table-cell">{{ ticket.departure_hour }}</td>
-                              <td data-field="ticket_price" >{{ ticket.ticket_price }}</td>
-                              <td data-field="payment_method" class="d-none d-md-table-cell">{{ ticket.payment_method |default_if_none:"" }}</td>
-                              <td data-field="mobile_money_phone_number" class="d-none d-md-table-cell">{{ ticket.mobile_money_phone_number |default_if_none:""  }}</td>
+                              <td data-field="agency" class="d-none d-md-table-cell" >{{ package.agency }}</td>
+                              <td data-field="package_code" >{{ package.package_code }}</td>
+                              <td data-field="customer" >{{ package.customer }}</td>
+                              <td data-field="departure_town" >{{ package.departure_town }}</td>
+                              <td data-field="arrival_town" >{{ package.arrival_town }}</td>
+                              <td data-field="price" >{{ package.price }}</td>
+                              <td data-field="description" >{{ package.description }}</td>
+                              <td data-field="payment_method" class="d-none d-md-table-cell">{{ package.payment_method |default_if_none:"" }}</td>
+                              <td data-field="mobile_money_phone_number" class="d-none d-md-table-cell">{{ package.mobile_money_phone_number |default_if_none:""  }}</td>
 
-                                <td data-field="updated_at"  class="d-none d-md-table-cell">{{ ticket.updated_at|date:"Y-m-d" }}</td>
+                                <td data-field="updated_at"  class="d-none d-md-table-cell">{{ package.updated_at|date:"Y-m-d" }}</td>
                                    <td data-field="status">
-                                {% if ticket.status == "PAYE" %}
+                                {% if package.status == "PAYE" %}
                                     <span class="badge bg-success">
                                         <i class="fas fa-circle-check me-1"></i> Payé
                                     </span>
-                                {% elif ticket.status == "NON_PAYE" %}
+                                {% elif package.status == "NON_PAYE" %}
                                     <span class="badge bg-danger">
                                         <i class="fas fa-circle-xmark me-1"></i> Non payé
                                     </span>
@@ -107,9 +107,10 @@
                              <td >
                                 <div class="d-flex flex-column flex-sm-row gap-2">
 {#                                {% if perms.products.change_product %}#}
-                                    <a href="{% url 'ticket_edit' ticket.id %}" class="btn btn-sm btn-warning">Modifier</a>
-                                    <a href="{% url 'ticket_print' ticket.id %}?preview=1" target="_blank" class="btn btn-sm btn-info">Aperçu</a>
-                                    <a href="{% url 'ticket_print' ticket.id %}" class="btn btn-sm btn-primary">Imprimer</a>
+                                    <a href="{% url 'package_detail' package.id %}" class="btn btn-sm btn-info">Fiche Colis</a>
+                                    <a href="{% url 'package_edit' package.id %}" class="btn btn-sm btn-warning">Modifier</a>
+{#                                    <a href="{% url 'package_print' package.id %}?preview=1" target="_blank" class="btn btn-sm btn-info">Aperçu</a>#}
+{#                                    <a href="{% url 'package_print' package.id %}" class="btn btn-sm btn-primary">Imprimer</a>#}
 
         {#                                {% endif %}#}
 
@@ -117,7 +118,7 @@
                                 <button
                                    class="btn btn-sm btn-danger"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ ticket.id }}">
+                                    data-bs-target="#deleteModal{{ package.id }}">
 
                                     Supprimer
                                 </button>
@@ -129,20 +130,20 @@
 
 
                                 <!-- Modale de confirmation -->
-                                    <div class="modal fade" id="deleteModal{{ ticket.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ ticket.id }}" aria-hidden="true">
+                                    <div class="modal fade" id="deleteModal{{ package.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ package.id }}" aria-hidden="true">
                                       <div class="modal-dialog">
                                         <div class="modal-content">
                                           <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ ticket.id }}">Confirmation de suppression</h5>
+                                            <h5 class="modal-title" id="deleteModalLabel{{ package.id }}">Confirmation de suppression</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                           </div>
                                           <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer l'agence <strong>{{ticket.ticket_code }}</strong> ?
+                                            Êtes-vous sûr de vouloir supprimer l'agence <strong>{{package.package_code }}</strong> ?
                                           </div>
                                           <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 
-                                            <form method="post" action="{% url 'ticket_delete' ticket.id %}">
+                                            <form method="post" action="{% url 'package_delete' package.id %}">
                                               {% csrf_token %}
                                               <button type="submit" class="btn btn-danger">Confirmer</button>
                                             </form>
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterStatut = document.getElementById('statut');
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
-    const rows = document.querySelectorAll('#TicketTableBody tr');
+    const rows = document.querySelectorAll('#packageTableBody tr');
 
     // 🔧 Normalisation
     function normalizeText(text) {
@@ -208,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         rows.forEach(row => {
             const agency = row.querySelector('[data-field="agency"]');
-            const ticket_code = row.querySelector('[data-field="ticket_code"]');
+            const package_code = row.querySelector('[data-field="package_code"]');
             const status = row.querySelector('[data-field="status"]');
             const customer = row.querySelector('[data-field="customer"]');
             const phone = row.querySelector('[data-field="mobile_money_phone_number"]');
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const agencyText = normalizeText(agency?.textContent);
             const statusToken = toToken(status?.textContent);
-            const ticketCodeText = normalizeText(ticket_code?.textContent);
+            const packageCodeText = normalizeText(package_code?.textContent);
             const customerText = normalizeText(customer?.textContent);
             const phoneText = normalizeText(phone?.textContent);
             const updatedDate = updated_at ? new Date(updated_at.textContent.trim()) : null;
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // 🔍 Recherche texte
             const matchesSearch =
                 customerText.includes(q) ||
-                ticketCodeText.includes(q) ||
+                packageCodeText.includes(q) ||
                 phoneText.includes(q);
 
             // 🏬 Filtre agence
@@ -252,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const match = matchesSearch && matchesAgency && matchesStatut && matchesDate;
             row.style.display = match ? '' : 'none';
 
-            [customer, phone, agency, ticket_code].forEach(cell => {
+            [customer, phone, agency, package_code].forEach(cell => {
                 if (cell) highlightText(cell, q);
             });
         });

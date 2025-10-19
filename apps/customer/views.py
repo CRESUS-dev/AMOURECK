@@ -35,9 +35,6 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-
-
-
 class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
@@ -55,7 +52,6 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-
 class CustomerListView(LoginRequiredMixin, ListView):
     model = Customer
     template_name = 'customer/customers_list.html'
@@ -68,6 +64,12 @@ class CustomerListView(LoginRequiredMixin, ListView):
         context['countries'] = Country.objects.order_by("name").distinct()
         context['towns'] = Town.objects.order_by("name").distinct()
         return context
+
+
+class CustomerDetailView(LoginRequiredMixin, DetailView):
+    model = Customer
+    template_name = "customer/customer_detail.html"
+    context_object_name = "customer"
 
 
 

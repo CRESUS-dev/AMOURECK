@@ -68,15 +68,23 @@
                 background-color: #45a049;
                 }
 
+
+
     </style>
     <div>
-        <h2>Django Chat</h2>
+        <h2>AMOURECK Chat</h2>
     </div>
     <div class="container">
         <form id = "post-form" method="POST" action="/chat/checkview/">
             {% csrf_token %}
-            <input type="text" name="room_name" placeholder="Room" />
-            <input type="text" name="username" placeholder="Username"/>
+{#            <input type="text" name="room_name" placeholder="Room" />#}
+            <select name="room_name" id="" class="form-select">
+                {% for room in rooms %}
+                <option value="{{ room.name }}">{{ room.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="username" value={{ username }} readonly/>
+
             <input type="submit" value="Enter Room">
         </form>
     </div>

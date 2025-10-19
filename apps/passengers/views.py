@@ -19,6 +19,7 @@ class TicketCreateView(LoginRequiredMixin, CreateView):
     template_name = 'passengers/ticket_add.html'
     success_url = reverse_lazy('ticket_list')
 
+
     def get_context_data(self, **kwargs):
         customer_id =0
         # retrieve the existant context
@@ -70,7 +71,7 @@ class TicketListView(LoginRequiredMixin, ListView):
     template_name = 'passengers/tickets_list.html'
     context_object_name = "tickets"
     paginate_by = 10
-    ordering = ['agency']
+    ordering = ['-updated_at']
 
 
     def get_context_data(self, **kwargs):
@@ -81,11 +82,11 @@ class TicketListView(LoginRequiredMixin, ListView):
         return context
 
 class TicketEditView(LoginRequiredMixin, UpdateView):
+
     model = Ticket
     form_class = TicketForm
     template_name = 'passengers/ticket_add.html'
     success_url = reverse_lazy('ticket_list')
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
@@ -103,6 +104,12 @@ class TicketEditView(LoginRequiredMixin, UpdateView):
 class TicketDeleteView(LoginRequiredMixin, DeleteView):
     model = Ticket
     success_url = reverse_lazy('ticket_list')
+
+
+class TicketDetailView(LoginRequiredMixin, DetailView):
+    model = Ticket
+    template_name = "passengers/ticket_detail.html"
+    context_object_name = "ticket"
 
 
 def ticket_render_pdf_view(request, *args, **kwargs):

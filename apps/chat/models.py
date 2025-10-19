@@ -9,7 +9,11 @@ from datetime import datetime
 
 class Room(TimeStampedModel):
     name = models.CharField(max_length=2000)
+    user = models.ManyToManyField(CustomUser, blank=True, null=True)
     history = HistoricalRecords()
+
+    def __str__(self):
+        return self.name
 
 
 def chat_media_directory_path(instance, filename):

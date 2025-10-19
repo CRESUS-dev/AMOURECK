@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    fields = ['name']
+    fields = ['name', 'user']
 
 
 @admin.register(Message)

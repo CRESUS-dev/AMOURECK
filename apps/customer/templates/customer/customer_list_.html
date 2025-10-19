@@ -73,6 +73,7 @@
                             <!-- Boutons CRUD -->
                              <td >
                                 <div class="d-flex flex-column flex-sm-row gap-2">
+                                    <a href="{% url 'customer_detail' customer.id%}" class="btn btn-sm btn-primary">Fiche Client</a>
 {#                                {% if perms.products.change_product %}#}
                                     <a href="{% url 'customer_edit' customer.id %}" class="btn btn-sm btn-warning">Modifier</a>
 

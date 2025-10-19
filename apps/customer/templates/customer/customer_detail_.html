@@ -3,141 +3,29 @@
 {% block main %}
 <main>
                     <div class="container-fluid px-4">
-                        <h2 class="mt-4">Création des clients</h2>
+                        <h2 class="mt-4">Fiche client</h2>
 
                         <hr>
                         <div class="row justify-content-center">
-                          <div class="col-md-6">
-                            <form  id="customerForm" method="post" class="shadow p-4 bg-light rounded">
-                                {% csrf_token %}
-                             <div class="mb-3">
-                                {{ form.agency.label_tag }}
-                                {{ form.agency }}
-                                {% if form.agency.errors %}
-                                    <div class="text-danger">
-                                        {{ form.agency.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                              <div class="mb-3">
-                                {{ form.code.label_tag }}
-                                {{ form.code }}
-                                {% if form.code.errors %}
-                                    <div class="text-danger">
-                                        {{ form.code.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.lastName.label_tag }}
-                                {{ form.lastName }}
-                                {% if form.lastName.errors %}
-                                    <div class="text-danger">
-                                        {{ form.lastName.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                                <div class="mb-3">
-                                    {{ form.firstName.label_tag }}
-                                    {{ form.firstName }}
-                                    {% if form.firstName.errors %}
-                                        <div class="text-danger">
-                                            {{ form.firstName.errors }}
-                                        </div>
-                                    {% endif %}
-
-                                </div>
-                            <div class="mb-3">
-
-                                {{ form.sex.label_tag }}
-                                {{ form.sex }}
-                                {% if form.sex.errors %}
-                                    <div class="text-danger">
-                                        {{ form.sex.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                             <div id="id_phone_number" class="mb-3">
-
-                                {{ form.phone_number.label_tag }}
-                                {{ form.phone_number }}
-                                {% if form.phone_number.errors %}
-                                    <div class="text-danger">
-                                        {{ form.phone_number.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div id="id_email" class="mb-3">
-                                {{ form.email.label_tag }}
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="text-danger">
-                                        {{ form.email.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.IDCardNumber.label_tag }}
-                                {{ form.IDCardNumber }}
-                                {% if form.IDCardNumber.errors %}
-                                    <div class="text-danger">
-                                        {{ form.IDCardNumber.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.address.label_tag }}
-                                {{ form.address }}
-                                {% if form.address.errors %}
-                                    <div class="text-danger">
-                                        {{ form.address.errors }}
-                                    </div>
-                                {% endif %}
-                            </div>
+                          <div class="col-md-6 shadow p-4 bg-light rounded">
+                            <p><strong>Agence :</strong> {{ customer.agency }}</p>
+                            <p><strong>Code Client :</strong> {{ customer.code }}</p>
+                            <p><strong>Nom & Prénoms:</strong> {{ customer.firstName }} {{ customer.lastName }}</p>
+                            <p><strong>Genre :</strong> {{ customer.sex }}</p>
+                            <p><strong>Email :</strong> {{ customer.email }}</p>
+                            <p><strong>Téléphone :</strong> {{ customer.phone_number }}</p>
+                            <p><strong>Numéro pièce d'identité :</strong> {{ customer.IDCardNumber }}</p>
+                            <p><strong>Adresse:</strong> {{ customer.address }}</p>
 
 
+                            <a href="{% url 'customers_list' %}" class="btn btn-outline-success">Retour à la liste</a>
 
-
-                    <button type="submit" class="btn  text-light w-100" style="background: #04414d">Enregistrer</button>
-
-                            {% for error in form.non_field_errors %}
-        <div style="color: red;">{{ error }}</div>
-    {% endfor %}
-                            </form>
 
                         </div>
                     </div>
                     </div>
 
-<script>
 
-    // Validation personnalisée
-    document.addEventListener("DOMContentLoaded", function () {
-        const phoneInput = document.querySelector("#id_phone_number");
-        const emailInput = document.querySelector("#id_email");
-
-        // Vérification numéro de téléphone (format international simple)
-        phoneInput.addEventListener("input", function () {
-            const regex = /^\+?\d{8,15}$/;
-            if (!regex.test(phoneInput.value)) {
-                phoneInput.setCustomValidity("Numéro invalide. Exemple : +33612345678");
-            } else {
-                phoneInput.setCustomValidity("");
-            }
-        });
-
-        // Vérification email
-        emailInput.addEventListener("input", function () {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (emailInput.value && !regex.test(emailInput.value)) {
-                emailInput.setCustomValidity("Adresse email invalide.");
-            } else {
-                emailInput.setCustomValidity("");
-            }
-        });
-    });
-</script>
                 </main>
 
 {% endblock main %}

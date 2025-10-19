@@ -3,7 +3,7 @@
 {% block main %}
 <main>
     <div class="container-fluid px-4">
-        <h2 class="mt-4">Création d'un ticket</h2>
+        <h2 class="mt-4">Création d'un Colis</h2>
         <hr>
 
         <div class="row justify-content-center">
@@ -24,27 +24,27 @@
 
                  <div class="mb-3">
                         <label for="code">Code</label>
-                        <input type="text" class="form-control" id="code" name="firstname"
+                        <input type="text" class="form-control" id="code" name="firstname" placeholder="Vous ne pouvez pas écrire dans ce champ"
                                value = "{% if selected_customer %}{{ selected_customer.code }}{% endif %}"disabled>
 
                  </div>
 
                     <div class="mb-3">
                         <label for="firstname">Prénoms</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname"
+                        <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Vous ne pouvez pas écrire dans ce champ"
                                value = "{% if selected_customer %}{{ selected_customer.firstName }}{% endif %}" disabled>
 
                     </div>
 
                     <div class="mb-3">
                         <label for="lastname">Nom</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname"
+                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Vous ne pouvez pas écrire dans ce champ"
                                value = "{% if selected_customer %}{{ selected_customer.lastName }}{% endif %}"disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="phone">Téléphone</label>
-                        <input type="text" class="form-control" id="phone" name="phone"
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Vous ne pouvez pas écrire dans ce champ"
                                value = "{% if selected_customer %}{{ selected_customer.phone_number }}{% endif %}"disabled>
                     </div>
 
@@ -68,33 +68,51 @@
                             </div>
                         {% endif %}
                     </div>
-
                     <div class="mb-3">
-                        {{ form.departure_date.label_tag }}
-                        {{ form.departure_date }}
-                        {% if form.departure_date.errors %}
+                        {{ form.receiver_name.label_tag }}
+                        {{ form.receiver_name }}
+                        {% if form.receiver_name.errors %}
                             <div class="text-danger">
-                                {{ form.departure_date.errors }}
+                                {{ form.receiver_name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.receiver_phone.label_tag }}
+                        {{ form.receiver_phone }}
+                        {% if form.receiver_phone.errors %}
+                            <div class="text-danger">
+                                {{ form.receiver_phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">
+                                {{ form.description.errors }}
                             </div>
                         {% endif %}
                     </div>
 
                     <div class="mb-3">
-                        {{ form.departure_hour.label_tag }}
-                        {{ form.departure_hour }}
-                        {% if form.departure_hour.errors %}
+                        {{ form.package_count.label_tag }}
+                        {{ form.package_count }}
+                        {% if form.package_count.errors %}
                             <div class="text-danger">
-                                {{ form.departure_hour.errors }}
+                                {{ form.package_count.errors }}
                             </div>
                         {% endif %}
                     </div>
 
+
                     <div class="mb-3">
-                        {{ form.ticket_price.label_tag }}
-                        {{ form.ticket_price }}
-                        {% if form.ticket_price.errors %}
+                        {{ form.price.label_tag }}
+                        {{ form.price }}
+                        {% if form.price.errors %}
                             <div class="text-danger">
-                                {{ form.ticket_price.errors }}
+                                {{ form.price.errors }}
                             </div>
                         {% endif %}
                     </div>

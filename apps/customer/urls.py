@@ -8,4 +8,5 @@ urlpatterns = [
     path('customers/modal/', CustomerModalListView.as_view(), name='customer_modal_list'),
     path('customer/edit/<int:pk>/', CustomerUpdateView.as_view(), name='customer_edit'),
     path('customer/delete/<int:pk>/', CustomerDeleteView.as_view(), name='customer_delete'),
+    path('customer/detail/<int:pk>/', CustomerDetailView.as_view(), name='customer_detail'),
 ]

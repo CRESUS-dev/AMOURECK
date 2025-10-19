@@ -2,9 +2,10 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('ticket/Add/', TicketCreateView.as_view(), name='ticket_add'),
-    path('ticket/list/', TicketListView.as_view(), name='ticket_list'),
-    path('ticket/edit/<int:pk>/', TicketEditView.as_view(), name='ticket_edit'),
-    path('ticket/delete/<int:pk>/', TicketDeleteView.as_view(), name='ticket_delete'),
-    path('ticket/print/<int:pk>/', ticket_render_pdf_view, name='ticket_print'),
+    path('package/Add/', PackageCreateView.as_view(), name='package_add'),
+     path('package/list/', PackageListView.as_view(), name='package_list'),
+    path('package/edit/<int:pk>/', PackageEditView.as_view(), name='package_edit'),
+    path('package/detail/<int:pk>/', PackageDetailView.as_view(), name='package_detail'),
+    path('package/delete/<int:pk>/', PackageDeleteView.as_view(), name='package_delete'),
+    # path('ticket/print/<int:pk>/', ticket_render_pdf_view, name='ticket_print'),
 ]

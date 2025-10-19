@@ -3,22 +3,41 @@
 {% block main %}
 <main>
                     <div class="container-fluid px-4">
-                        <h2 class="mt-4">Fiche client</h2>
+                        <h2 class="mt-4">Fiche Colis</h2>
 
                         <hr>
                         <div class="row justify-content-center">
                           <div class="col-md-6 shadow p-4 bg-light rounded">
-                            <p><strong>Agence :</strong> {{ customer.agency }}</p>
-                            <p><strong>Code Client :</strong> {{ customer.code }}</p>
-                            <p><strong>Nom & Prénoms:</strong> {{ customer.firstName }} {{ customer.lastName }}</p>
-                            <p><strong>Genre :</strong> {{ customer.sex }}</p>
-                            <p><strong>Email :</strong> {{ customer.email }}</p>
-                            <p><strong>Téléphone :</strong> {{ customer.phone_number }}</p>
-                            <p><strong>Numéro pièce d'identité :</strong> {{ customer.IDCardNumber }}</p>
-                            <p><strong>Adresse:</strong> {{ customer.address }}</p>
+                            <p><strong>Agence :</strong> {{ package.agency }}</p>
+                            <p><strong>Code colis :</strong> {{ package.package_code }}</p>
+                            <p><strong>ID Client : </strong> <a href="{% url 'customer_detail' package.customer.id%}" class="badge bg-info">{{ package.customer.id}}</a></p>
+                            <p><strong>Nom & Prénoms Client :</strong> {{ package.customer.firstName }} {{ package.customer.lastName }}</p>
+                            <p><strong>Ville de départ :</strong> {{ package.departure_town }} </p>
+                            <p><strong>Ville d'arrivée :</strong> {{ package.arrival_town }} </p>
+                            <p><strong>Nom & Prénoms receveur :</strong> {{ package.receiver_name }} </p>
+                            <p><strong>Télephone receveur :</strong> {{ package.receiver_phone }} </p>
+                            <p><strong>Description colis :</strong> {{ package.description }} </p>
+                            <p><strong>Nombre de colis :</strong> {{ package.package_count }} </p>
+                            <p><strong>Prix :</strong> {{ package.price }} </p>
+                            <p><strong>Moyen de paiement :</strong> {{ package.payment_method }} </p>
+                            <p><strong>N° Mobile Money :</strong> {{ package.mobile_money_phone_number }} </p>
+                            <p><strong>Statut :</strong> {% if package.status == "PAYE" %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-circle-check me-1"></i> Payé
+                                    </span>
+                                {% elif package.status == "NON_PAYE" %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-circle-xmark me-1"></i> Non payé
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i> En attente
+                                    </span>
+                                {% endif %} </p>
 
 
-                            <a href="{% url 'customers_list' %}" class="btn btn-outline-success">Retour à la liste</a>
+
+                            <a href="{% url 'package_list' %}" class="btn btn-outline-success">Retour à la liste</a>
 
 
                         </div>

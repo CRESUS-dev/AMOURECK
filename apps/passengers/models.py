@@ -46,7 +46,7 @@ class Ticket(TimeStampedModel):
 
 
     def generate_ticket_code(self):
-        """generate ticket code with sequence in customer model"""
+        """generate ticket code """
         import re
         from django.utils import timezone
 

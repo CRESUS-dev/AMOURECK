@@ -30,6 +30,7 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
+
         selected_agency = form.cleaned_data.get('agency')
         # vérifier si l'utilisateur a des succursales assignées
         if not user.agencies.exists():
@@ -47,6 +48,7 @@ class CustomLoginView(LoginView):
             self.request.session['name'] = selected_agency.name
             self.request.session['country_id'] = selected_agency.country.id
             self.request.session['iso_code'] = selected_agency.country.iso_code
+
 
             country = Country.objects.get(pk=selected_agency.country.id)
             currency = country.currency

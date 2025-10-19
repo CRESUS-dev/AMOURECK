@@ -97,6 +97,16 @@ class Agency(TimeStampedModel, NamedModel):
                 START 1 INCREMENT 1;
             """)
 
+    def created_package_sequence(self):
+        """séquence de création des code tickets"""
+        safe_code = re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        sequence_name = f"package_code_seq_{safe_code}"
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+                   CREATE SEQUENCE IF NOT EXISTS {sequence_name}
+                   START 1 INCREMENT 1;
+               """)
+
 
     def __str__(self):
         return self.name

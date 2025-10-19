@@ -5,12 +5,17 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from apps.chat.models import Room, Message
 from apps.accounts.models import CustomUser
-
+import re
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room"]
         self.group_name = f"chat_{self.room_name}"
+
+
+        # Nettoyage du nom pour être compatible Channels
+        safe_room_name = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', self.room_name)
+        self.group_name = f"chat_{safe_room_name}"
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
