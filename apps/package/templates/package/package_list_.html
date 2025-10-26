@@ -85,9 +85,7 @@
                               <td data-field="payment_method" class="d-none d-md-table-cell">{{ package.payment_method |default_if_none:"" }}</td>
                               <td data-field="mobile_money_phone_number" class="d-none d-md-table-cell">{{ package.mobile_money_phone_number |default_if_none:""  }}</td>
 
-                                <td data-field="updated_at"  class="d-none d-md-table-cell">{{ package.updated_at|date:"Y-m-d" }}</td>
-                                   <td data-field="status">
-                                {% if package.status == "PAYE" %}
+                                <td data-field="updated_at"  class="d-none{% if package.status == "PAYE" %}
                                     <span class="badge bg-success">
                                         <i class="fas fa-circle-check me-1"></i> Payé
                                     </span>
@@ -99,7 +97,9 @@
                                     <span class="badge bg-warning text-dark">
                                         <i class="fas fa-clock me-1"></i> En attente
                                     </span>
-                                {% endif %}
+                                {% endif %} d-md-table-cell">{{ package.updated_at|date:"Y-m-d" }}</td>
+                                   <td data-field="status">
+
 </td>
 
 

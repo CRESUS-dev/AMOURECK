@@ -8,4 +8,8 @@ urlpatterns = [
     path('ticket/delete/<int:pk>/', TicketDeleteView.as_view(), name='ticket_delete'),
     path('ticket/detail/<int:pk>/', TicketDetailView.as_view(), name='ticket_detail'),
     path('ticket/print/<int:pk>/', ticket_render_pdf_view, name='ticket_print'),
+
+    path('ticket/dashboard/',ticket_dashboard, name='tickets_dashboard' ),
+    path('ticket/dashboard/data',ticket_dashboard_data, name='tickets_dashboard_data' ),
+
 ]

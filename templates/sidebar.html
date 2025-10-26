@@ -44,7 +44,12 @@
                                     <li><a class="dropdown-item" href="{% url 'ticket_list' %}">
                                         <i class="fas fa-globe fa-fw me-2 text-black"></i>
                                         Vente de ticket</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                     <li><a class="dropdown-item" href="{% url 'tickets_dashboard' %}">
+                                        <i class="fas fa-tachometer-alt fa-fw me-2 text-black"></i>
+                                        Dashbord</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                 </ul>
                             </div>
                             <div class="dropdown mb-4 mx-2 ">
@@ -126,5 +131,6 @@
  </div>
 
 
+{% block extra_js %}{% endblock extra_js %}
 
 {% endblock sidebar %}

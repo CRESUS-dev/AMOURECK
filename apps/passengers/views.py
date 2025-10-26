@@ -1,16 +1,21 @@
+
 from .models import *
 from apps.country.models import *
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TicketForm
 from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncDate
+from django.utils.dateparse import parse_date
+from datetime import datetime, time
+from django.utils.timezone import make_aware
+from djmoney.money import Money
 
-
-from .models import Ticket
 
 
 class TicketCreateView(LoginRequiredMixin, CreateView):
@@ -111,32 +116,29 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
     template_name = "passengers/ticket_detail.html"
     context_object_name = "ticket"
 
-
-def ticket_render_pdf_view(request, *args, **kwargs):
-    pk = kwargs.get('pk')
-    ticket = get_object_or_404(Ticket, pk=pk)
-
-    template_path = 'passengers/ticket_pdf_print.html'
-    context = {'ticket':ticket}
-    # create a Django response object, and specify content_type as pdf
-    response = HttpResponse(content_type='application/pdf')
-    # if download
-    # response['Content-Disposition'] = 'attachement; filename="ticket_2.pdf"'
-    # if display
-    response['Content-Disposition'] = 'filename="ticket.pdf"'
-
-    # find the template and render it.
-    template = get_template(template_path)
-    html = template.render(context)
-
-    # create a pdf
-    pisa_status = pisa.CreatePDF(html, dest=response)
-    # if error then show some funy view
-    if pisa_status.err:
-        return HttpResponse("We had some errors <pre> " + html + '<pre>')
-    return response
-
-
+# def ticket_render_pdf_view(request, *args, **kwargs):
+#     pk = kwargs.get('pk')
+#     ticket = get_object_or_404(Ticket, pk=pk)
+#
+#     template_path = 'passengers/ticket_pdf_print.html'
+#     context = {'ticket':ticket}
+#     # create a Django response object, and specify content_type as pdf
+#     response = HttpResponse(content_type='application/pdf')
+#     # if download
+#     # response['Content-Disposition'] = 'attachement; filename="ticket_2.pdf"'
+#     # if display
+#     response['Content-Disposition'] = 'filename="ticket.pdf"'
+#
+#     # find the template and render it.
+#     template = get_template(template_path)
+#     html = template.render(context)
+#
+#     # create a pdf
+#     pisa_status = pisa.CreatePDF(html, dest=response)
+#     # if error then show some funy view
+#     if pisa_status.err:
+#         return HttpResponse("We had some errors <pre> " + html + '<pre>')
+#     return response
 def ticket_render_pdf_view(request, *args, **kwargs):
     pk = kwargs.get('pk')
     ticket = get_object_or_404(Ticket, pk=pk)
@@ -190,3 +192,48 @@ def ticket_render_pdf_view(request, *args, **kwargs):
         return HttpResponse("Erreur lors de la génération du PDF.<pre>" + html + "</pre>")
 
     return response
+
+def ticket_dashboard_data(request):
+    date_from = request.GET.get("date_from")
+    date_to   = request.GET.get("date_to")
+
+    qs = Ticket.objects.all()
+
+    if date_from:
+        d_from = parse_date(date_from)
+        dt_from = make_aware(datetime.combine(d_from, time.min))
+        qs = qs.filter(updated_at__gte=dt_from)
+
+    if date_to:
+        d_to = parse_date(date_to)
+        dt_to = make_aware(datetime.combine(d_to, time.max))
+        qs = qs.filter(updated_at__lte=dt_to)
+
+    # --- Tickets count per agency (for chart)
+    counts = (
+        qs.values("agency__name")
+        .annotate(total=Count("id"))
+        .order_by("agency__name")
+    )
+
+    # --- Amount per agency (same qs, grouped)
+    amounts = (
+        qs.values("agency__name", "ticket_price_currency")
+        .annotate(total_amount=Sum("ticket_price"))
+        .order_by("agency__name")
+    )
+
+    return JsonResponse({
+        "labels": [c["agency__name"] for c in counts],
+        "values": [c["total"] for c in counts],
+        "amounts": list(amounts),
+    })
+
+def ticket_dashboard(request):
+    return render(request,"passengers/ticket_dashboard.html")
+
+
+
+
+
+

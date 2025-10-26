@@ -20,18 +20,15 @@
                             <p><strong>Prix:  </strong> {{ ticket.ticket_price }}</p>
                             <p><strong>Moyen de paiement:   </strong> {{ ticket.payment_method }}</p>
                             <p><strong>N° Mobile Money:   </strong> {{ ticket.mobile_money_phone_number }}</p>
-                            <p><strong>Statut Ticket :   </strong> <p><strong>Statut :</strong> {% if package.status == "PAYE" %}
+                            <p><strong>Statut Ticket :   </strong> <p><strong>Statut :</strong> {% if ticket.status == "PAYE" %}
                                     <span class="badge bg-success">
                                         <i class="fas fa-circle-check me-1"></i> Payé
                                     </span>
-                                {% elif package.status == "NON_PAYE" %}
+                                {% elif ticket.status == "NON_PAYE" %}
                                     <span class="badge bg-danger">
                                         <i class="fas fa-circle-xmark me-1"></i> Non payé
                                     </span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="fas fa-clock me-1"></i> En attente
-                                    </span>
+
                                 {% endif %} </p>
 
 

@@ -1,0 +1,111 @@
+
+
+const c = document.getElementById("ticketsChart");
+console.log("Canvas trouvé ?", c);
+
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+        <h2 class="mt-4">Dashboard-Tickets</h2>
+        <hr>
+
+        <div class="row justify-content-center ">
+                <form id="filterForm" class="shadow p-4 bg-light rounded">
+                    Du: <input type="date" id="date_from" name="date_from">
+                    Au: <input type="date" id="date_to" name="date_to">
+                    <button class="btn btn-outline-primary" type="submit">Refresh</button>
+                </form>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="ticketsChart" width="600" height="300" ></canvas>
+            </div>
+            <div class="col-md-6">
+               <div id="amountsSummary" class="table table-bordered mt-4"></div>
+            </div>
+
+
+        </div>
+    </div>
+
+{#    <script>#}
+{#        const ctx = document.getElementById("ticketsChart");#}
+{#        let chartInstance;#}
+{##}
+{#        async function fetchData(){#}
+{#            const from = document.getElementById("date_from").value;#}
+{#            const to = document.getElementById("date_to").value;#}
+{##}
+{#            const url = new URL("{% url 'tickets_dashboard_data' %}", window.location.origin);#}
+{#            if (from) url.searchParams.append('data_from', from);#}
+{#            if (to) url.searchParams.append('date_to', to);#}
+{##}
+{#            const response = await fetch(url);#}
+{#            const data = await response.json();#}
+{##}
+{#            //-- créer ou mettre  à jour le graphique#}
+{#            const chartData = {#}
+{#                labels: data.labels,#}
+{#                datasets: [{#}
+{#                    label:'Tickets vendus',#}
+{#                    data: data.values,#}
+{#                    backgroundColor: 'rgba(75, 192, 192, 0.5)',#}
+{#                    borderColor: 'rgba(75, 192, 192, 1)',#}
+{#                    borderWidth: 1#}
+{##}
+{#                }]#}
+{#            };#}
+{#            const config = {#}
+{#                type:"bar",#}
+{#                data: chartData,#}
+{#                options: {#}
+{#                    plugins:{#}
+{#                        title: {#}
+{#                            display: true,#}
+{#                            text: 'Tickets vendus par agence'#}
+{#                        },#}
+{#                        legend: {#}
+{#                            display: false#}
+{#                        },#}
+{#                        scales: {#}
+{#                            y: {#}
+{#                                beginAtZero:true#}
+{#                            }#}
+{#                        }#}
+{#                    }#}
+{#                }#}
+{#            };#}
+{##}
+{#            if(chartInstance) {#}
+{#                chartInstance.destroy();#}
+{#            }#}
+{#            chartInstance = new Chart(ctx, config);#}
+{##}
+{#        }#}
+{#        //charger au démarrage#}
+{#        fetchData();#}
+{##}
+{#        //raffraichir au changement de date#}
+{#        document.getElementById("filtreForm").addEventListener("submit",e =>{#}
+{#            e.preventDefault();#}
+{#            fetchData();#}
+{#        })#}
+{##}
+{#    </script>#}
+
+
+</main>
+{% endblock main %}
+{% block extra_js %}
+    <script type="module" src="http://localhost:5173/static/vite/main.js"></script>
+{% endblock extra_js %}
+
+
+
+
+
+
+
+
