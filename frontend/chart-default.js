@@ -16,6 +16,6 @@ Chart.defaults.plugins.tooltip.cornerRadius = 6;
 
 // Layout responsive
 Chart.defaults.maintainAspectRatio = false;
-Chart.defaults.responsive = false;
+Chart.defaults.responsive = true;
 
 

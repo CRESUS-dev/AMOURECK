@@ -216,12 +216,25 @@ def ticket_dashboard_data(request):
         .order_by("agency__name")
     )
 
-    # --- Amount per agency (same qs, grouped)
-    amounts = (
-        qs.values("agency__name", "ticket_price_currency")
+
+    # Montant par agence + devise de l’agence (PAS celle du MoneyField)
+    currency_path = "agency__country__currency"
+    _amounts = (
+        qs.values("agency__name", currency_path)
         .annotate(total_amount=Sum("ticket_price"))
         .order_by("agency__name")
     )
+
+    # Payload propre pour le front
+    amounts = [
+        {
+            "agency__name": row["agency__name"],
+
+            "total_amount": str(row["total_amount"]),  # dj-money -> string
+            "agency_currency": row[currency_path],
+        }
+        for row in _amounts
+    ]
 
     return JsonResponse({
         "labels": [c["agency__name"] for c in counts],
