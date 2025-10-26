@@ -1,0 +1,27 @@
+{
+  "name": "amoureck",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CRESUS-dev/AMOURECK.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CRESUS-dev/AMOURECK/issues"
+  },
+  "homepage": "https://github.com/CRESUS-dev/AMOURECK#readme",
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "vite": "^7.1.12"
+  }
+}
