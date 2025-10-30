@@ -26,11 +26,11 @@
                                         <i class="fas fa-building-user fa-fw me-2 text-black"></i>
                                         Agences</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'customers_list' %}">
-                                        <i class="fas fa-users fa-fw me-2 text-black"></i>
-
-                                        Clients</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+{#                                    <li><a class="dropdown-item" href="{% url 'customers_list' %}">#}
+{#                                        <i class="fas fa-users fa-fw me-2 text-black"></i>#}
+{##}
+{#                                        Clients</a></li>#}
+{#                                        <li><hr class="dropdown-divider"></li>#}
                                 </ul>
                             </div>
                             <div class="dropdown mb-4 mx-2 ">
@@ -40,6 +40,11 @@
                                     Gestion des passagers
                                 </a>
                                 <ul class="dropdown-menu w-100 animated-dropdown" aria-labelledby="dropdownMenuLink1">
+                                    <li><a class="dropdown-item" href="{% url 'customers_list' %}">
+                                        <i class="fas fa-users fa-fw me-2 text-black"></i>
+
+                                        Clients</a></li>
+                                        <li><hr class="dropdown-divider"></li>
 
                                     <li><a class="dropdown-item" href="{% url 'ticket_list' %}">
                                         <i class="fas fa-globe fa-fw me-2 text-black"></i>

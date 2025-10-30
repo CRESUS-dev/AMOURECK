@@ -29,14 +29,14 @@ function renderChart(labels, values) {
     if (chartInstance) chartInstance.destroy();
 
     chartInstance = new Chart(canvas, {
-        type: "bar",
+        type: "pie",
         data: {
             labels: labels,
             datasets: [{
                 label: "Packages vendus",
                 data: values,
-                backgroundColor: "rgba(75, 192, 192, 0.5)",
-                borderColor: "rgba(75, 192, 192, 1)",
+                // backgroundColor: "rgba(75, 192, 192, 0.5)",
+                // borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 1
             }]
         },

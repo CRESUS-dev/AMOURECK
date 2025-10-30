@@ -141,7 +141,7 @@ def package_dashboard_data(request):
     # payload pour le front
     amounts = [
         {
-            "agency__name":row["agency_name"],
+            "agency__name":row["agency__name"],
             "total_amount":str(row["total_amount"]),
             "agency_currency": row[currency_path]
 
