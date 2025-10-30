@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TicketForm
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse,request
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.shortcuts import render, get_object_or_404
@@ -15,14 +15,17 @@ from django.utils.dateparse import parse_date
 from datetime import datetime, time
 from django.utils.timezone import make_aware
 from djmoney.money import Money
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 
-class TicketCreateView(LoginRequiredMixin, CreateView):
+class TicketCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
     model = Ticket
     form_class = TicketForm
     template_name = 'passengers/ticket_add.html'
     success_url = reverse_lazy('ticket_list')
+    success_message = "Le ticket est créé avec succès"
+
 
 
     def get_context_data(self, **kwargs):
@@ -68,6 +71,8 @@ class TicketCreateView(LoginRequiredMixin, CreateView):
         if customer_id:
             from apps.customer.models import Customer
             form.instance.customer_id = customer_id
+
+
         return super().form_valid(form)
 
 
@@ -86,12 +91,13 @@ class TicketListView(LoginRequiredMixin, ListView):
         context['agencies'] = agencies
         return context
 
-class TicketEditView(LoginRequiredMixin, UpdateView):
+class TicketEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     model = Ticket
     form_class = TicketForm
     template_name = 'passengers/ticket_add.html'
     success_url = reverse_lazy('ticket_list')
+    success_message = "Le Ticket a été mis à jour avec succès"
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
@@ -106,9 +112,10 @@ class TicketEditView(LoginRequiredMixin, UpdateView):
         context['selected_customer'] = getattr(ticket, 'customer', None)
         return context
 
-class TicketDeleteView(LoginRequiredMixin, DeleteView):
+class TicketDeleteView(LoginRequiredMixin,SuccessMessageMixin, DeleteView):
     model = Ticket
     success_url = reverse_lazy('ticket_list')
+    success_message = "Le Ticket a été supprimé avec succès"
 
 
 class TicketDetailView(LoginRequiredMixin, DetailView):
@@ -225,7 +232,7 @@ def ticket_dashboard_data(request):
         .order_by("agency__name")
     )
 
-    # Payload propre pour le front
+    # Payload pour le front
     amounts = [
         {
             "agency__name": row["agency__name"],

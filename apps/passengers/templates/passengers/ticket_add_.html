@@ -161,7 +161,7 @@
           <table class="table table-hover table-bordered align-middle" id="customerTable">
             <thead class="table-secondary">
               <tr>
-                <th>ID</th>
+                <th class="d-none d-md-table-cell">ID</th>
                 <th>Code</th>
                 <th>Prénom</th>
                 <th>Nom</th>
@@ -172,7 +172,7 @@
             <tbody id="customerTableBody">
               {% for customer in customers %}
               <tr>
-                <td>{{ customer.id }}</td>
+                <td class="d-none d-md-table-cell">{{ customer.id }}</td>
                 <td>{{ customer.code }}</td>
                 <td>{{ customer.firstName }}</td>
                 <td>{{ customer.lastName }}</td>

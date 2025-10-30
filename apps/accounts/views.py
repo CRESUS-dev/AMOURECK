@@ -78,5 +78,5 @@ class CustomLogoutView(LogoutView):
         # deconnecter explicitement l'utilisateur
         logout(request)
         # messages flash
-        messages.success(request, "Vous avez été déconnecté(e) avec succès")
+
         return redirect('login')

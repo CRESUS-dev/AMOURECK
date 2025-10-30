@@ -47,8 +47,9 @@
                                     <li><hr class="dropdown-divider"></li>
 
                                      <li><a class="dropdown-item" href="{% url 'tickets_dashboard' %}">
-                                        <i class="fas fa-tachometer-alt fa-fw me-2 text-black"></i>
-                                        Tickets Dashboard</a></li>
+                                        <i class="fas fa-chart-pie fa-fw me-2 text-black"></i>
+
+                                         Dashboard Tickets</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 </ul>
                             </div>
@@ -64,14 +65,36 @@
                                         <i class="fa-solid   fas fa-boxes-stacked fa-fw me-2 text-black"></i>
                                         Enregistrement colis</a></li>
                                         <li><hr class="dropdown-divider"></li>
+
+                                       <li><a class="dropdown-item" href="{% url 'package_dashboard' %}">
+                                        <i class="fas fa-chart-column fa-fw me-2 text-black"></i>
+                                         Dashboard Colis</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                 
                                 </ul>
                             </div>
+{#                            <div class="dropdown mb-4 mx-2 ">#}
+{#                                #}
+{#                                <a class="btn btn-success dropdown-toggle w-100 d-flex justify-content-between " href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                    <i class="fas fa-money-bill-wave fa-fw me-2 text-white"></i>#}
+{#                                    Gestion des transferts#}
+{#                                </a>#}
+{#                                <ul class="dropdown-menu w-100 animated-dropdown" aria-labelledby="dropdownMenuLink1">#}
+{##}
+{#                                    <li><a class="dropdown-item" href="{% url 'home' %}">#}
+{#                                        <i class="fas fa-wallet  fa-coins fa-fw me-2 text-black"></i>#}
+{#                                        ajout</a></li>#}
+{#                                            <i class="fas fa-mobile-alt"></i>#}
+{#                                        <li><hr class="dropdown-divider"></li>#}
+{##}
+{#                                </ul>#}
+{#                            </div>#}
+
                             <div class="dropdown mb-4 mx-2 ">
-                                
+
                                 <a class="btn btn-success dropdown-toggle w-100 d-flex justify-content-between " href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-comment fa-fw me-2 text-white"></i>
-                                    Chat
+                                    AMOURECK Chat
                                 </a>
                                 <ul class="dropdown-menu w-100 animated-dropdown" aria-labelledby="dropdownMenuLink1">
 
@@ -82,7 +105,6 @@
 
                                 </ul>
                             </div>
-                            
                             
                         </div>
                       <!-- Right Section -->

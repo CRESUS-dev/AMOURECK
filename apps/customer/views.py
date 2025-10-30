@@ -9,16 +9,18 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
 from apps.country.models import *
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 
 
-class CustomerCreateView(LoginRequiredMixin, CreateView):
+class CustomerCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     model = Customer
     form_class = CustomerForm
     template_name = 'customer/customer_add.html'
     success_url = reverse_lazy('customers_list')
+    success_message = "Le client est créé avec succès"
 
     def form_valid(self, form):
         country_id = self.request.session.get('country_id')
@@ -35,11 +37,12 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CustomerUpdateView(LoginRequiredMixin, UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customer/customer_add.html'
     success_url = reverse_lazy('customers_list')
+    success_message = "Le client est mise à jour avec succès"
 
     def form_valid(self, form):
         country_id = self.request.session.get('country_id')
@@ -88,6 +91,7 @@ class CustomerModalListView(LoginRequiredMixin, TemplateView):
 class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = reverse_lazy('customers_list')
+
 
     def post(self, request, *args, **kwargs):
 

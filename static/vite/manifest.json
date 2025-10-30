@@ -1,0 +1,24 @@
+{
+  "_auto-aF82oVy8.js": {
+    "file": "assets/auto-aF82oVy8.js",
+    "name": "auto"
+  },
+  "main-packages.js": {
+    "file": "assets/packages-CWF2aIPZ.js",
+    "name": "packages",
+    "src": "main-packages.js",
+    "isEntry": true,
+    "imports": [
+      "_auto-aF82oVy8.js"
+    ]
+  },
+  "main-ticket.js": {
+    "file": "assets/main-f0sl9ELD.js",
+    "name": "main",
+    "src": "main-ticket.js",
+    "isEntry": true,
+    "imports": [
+      "_auto-aF82oVy8.js"
+    ]
+  }
+}

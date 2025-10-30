@@ -1,12 +1,12 @@
 
-const c = document.getElementById("ticketsChart");
+
 {% extends 'sidebar.html' %}
 {% load static %}
 {% load vite_tags %}
 {% block main %}
 <main>
     <div class="container-fluid px-4">
-        <h2 class="mt-4">Dashboard-Tickets</h2>
+        <h2 class="mt-4">Dashboard-Packages</h2>
         <hr>
 
         <div class="row justify-content-center ">
@@ -19,12 +19,12 @@ const c = document.getElementById("ticketsChart");
         <br>
         <div class="row">
             <div class="col-md-4">
-                <canvas id="ticketsChart" width="400" height="300" class="shadow p-4 bg-light rounded"></canvas>
+                <canvas id="packagesChart" width="400" height="300" class="shadow p-4 bg-light rounded"></canvas>
             </div>
 
             <div class="col-md-6">
                <div  class="shadow p-4 bg-light rounded mt-4" >
-                    <h5 class="text-center" style="color:rgb(0,67,100)">Montant des tickets vendus par Agence</h5>
+                    <h5 class="text-center" style="color:rgb(0,67,100)">Montant des colis enregistrés par Agence</h5>
                     <table class="table table-bordered table-striped mt-4" id="amountsSummary">
 
                             <thead class="table-dark">
@@ -51,7 +51,7 @@ const c = document.getElementById("ticketsChart");
 {% endblock main %}
 {% block extra_js %}
 {% load vite_tags %}
-<script type="module" src="{% vite_static 'main-ticket.js' %}"></script>
+<script type="module" src="{% vite_static 'main-packages.js' %}"></script>
 {% endblock extra_js %}
 
 
