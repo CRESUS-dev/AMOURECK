@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "apps.chat",
     "django_extensions",
     "channels",
+    "apps.accounting"
 
 
 ]

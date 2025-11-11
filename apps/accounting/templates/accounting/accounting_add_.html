@@ -1,0 +1,81 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+                   <div class="container-fluid px-4">
+                       <h2 class="mt-4">Saisie Opération</h2>
+                       <hr>
+                       <div class="row justify-content-center">
+                           <div class="col-md-6">
+                               <form id="accountingform" method="post" class="shadow p-4 bg-light rounded">
+                                   {% csrf_token %}
+                                   <div class="mb-3">
+                                       {{ form.date_operation.label_tag }}
+                                       {{ form.date_operation }}
+                                       {% if form.date_operation.errors %}
+                                            <div class="text-danger">
+                                                {{ form.date_operation.errors }}
+                                            </div>
+                                       {% endif %}
+
+
+
+
+                                   </div>
+                                    <div class="mb-3">
+                                       {{ form.operation_type.label_tag }}
+                                       {{ form.operation_type }}
+                                       {% if form.operation_type.errors %}
+                                            <div class="text-danger">
+                                                {{ form.operation_type.errors }}
+                                            </div>
+                                       {% endif %}
+
+
+
+
+                                   </div>
+                                    <div class="mb-3">
+                                       {{ form.description.label_tag }}
+                                       {{ form.description }}
+                                       {% if form.description.errors %}
+                                            <div class="text-danger">
+                                                {{ form.description.errors }}
+                                            </div>
+                                       {% endif %}
+
+                                   </div>
+                                    <div class="mb-3">
+                                       {{ form.amount.label_tag }}
+                                       {{ form.amount }}
+                                       {% if form.amount.errors %}
+                                            <div class="text-danger">
+                                                {{ form.amount.errors }}
+                                            </div>
+                                       {% endif %}
+
+
+
+
+                                   </div>
+                                <button type="submit" class="btn  text-light w-100" style="background: #04414d">Enregistrer</button>
+                                {% for error in form.non_field_errors %}
+                                <div style="color: red;">{{ error }}</div>
+                            {% endfor %}
+                               </form>
+                           </div>
+                       </div>
+                   </div>-
+
+<script>
+
+</script>
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+

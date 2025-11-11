@@ -1,0 +1,259 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+{% include 'messages.html' %}
+                    <div class="container-fluid px-4">
+
+                        <h2 class="mt-4">Opérations comptables</h2>
+
+                        <hr>
+
+
+                    <a href="{% url 'accounting_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une opération</a>
+
+                        <hr>
+                        <div class="row">
+
+                          <!-- Champ de recherche -->
+                         <div class="justify-content-center " style="background: #eae8e8; border-radius:10px">
+                            <div class="row mb-3 " >
+                            <div class="col-md-3">
+                                    <label for="startDate" class="form-label">📅 Date début</label>
+                                    <input type="date" id="startDate" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                    <label for="endDate" class="form-label">📅 Date fin</label>
+                                    <input type="date" id="endDate" class="form-control">
+                            </div>
+                         </div>
+
+                            <div class="row mb-3">
+                            <div class="col-md-3">
+                                 <input type="text" id="searchinput" class="form-control mb-3" placeholder="🔍 Recherche par description">
+                            </div>
+                            <div class="col-md-3">
+                                <select  id="filterAgency" class="form-select ">
+                                    <option value="">🏬Toutes les agences</option>
+                                    {% for agency in agencies %}
+                                        <option value="{{ agency.name | lower }}">{{ agency.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select  id="type" class="form-select">
+                                    <option value="">Type opération</option>
+                                    <option value="CH">Charges</option>
+                                    <option value="PD">Produits</option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
+                        <table class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+
+                              <th scope="col" class="d-none d-md-table-cell">Agence </th>
+                              <th scope="col" >Date opération </th>
+                              <th scope="col" >Type opération</th>
+                              <th scope="col" >Description </th>
+                              <th scope="col">Montant </th>
+                              <th scope="col" class="d-none d-md-table-cell"> update_at</th>
+                              <th scope="col" >Actions </th>
+
+                            </tr>
+                          </thead>
+                          <tbody id="AccountingTableBody">
+                                {% for accounting in accounting %}
+                            <tr>
+
+                              <td data-field="agency" class="d-none d-md-table-cell" >{{ accounting.agency }}</td>
+                              <td data-field="date_operation" >{{ accounting.date_operation }}</td>
+                              <td data-field="operation_type" >{{ accounting.operation_type }}</td>
+                              <td data-field="description" >{{ accounting.description }}</td>
+                              <td data-field="amount" >{{ accounting.amount }}</td>
+                                <td data-field="updated_at"  class="d-none d-md-table-cell">{{ accounting.updated_at|date:"Y-m-d" }}</td>
+
+</td>
+
+
+                            <!-- Boutons CRUD -->
+                             <td >
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+{#                                {% if perms.products.change_product %}#}
+
+                                    <a href="{% url 'accounting_edit' accounting.id %}" class="btn btn-sm btn-warning">Modifier</a>
+
+{#                                        {% endif %}#}
+
+{#                                    {% if perms.products.delete_product %}#}
+                                <button
+                                   class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ ticket.id }}">
+
+                                    Supprimer
+                                </button>
+{#                            {% endif %}#}
+                        </div>
+                            </td>
+                    </tr>
+
+
+
+                                <!-- Modale de confirmation -->
+{#                                    <div class="modal fade" id="deleteModal{{ ticket.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ ticket.id }}" aria-hidden="true">#}
+{#                                      <div class="modal-dialog">#}
+{#                                        <div class="modal-content">#}
+{#                                          <div class="modal-header">#}
+{#                                            <h5 class="modal-title" id="deleteModalLabel{{ ticket.id }}">Confirmation de suppression</h5>#}
+{#                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>#}
+{#                                          </div>#}
+{#                                          <div class="modal-body">#}
+{#                                            Êtes-vous sûr de vouloir supprimer l'agence <strong>{{ticket.ticket_code }}</strong> ?#}
+{#                                          </div>#}
+{#                                          <div class="modal-footer">#}
+{#                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>#}
+{##}
+{#                                            <form method="post" action="{% url 'ticket_delete' ticket.id %}">#}
+{#                                              {% csrf_token %}#}
+{#                                              <button type="submit" class="btn btn-danger">Confirmer</button>#}
+{#                                            </form>#}
+{#                                          </div>#}
+{#                                        </div>#}
+{#                                      </div>#}
+{#                                    </div>#}
+
+                        </td>
+                            </tr>
+
+                                {% endfor %}
+
+                          </tbody>
+                        </table>
+                           {% include 'pagination.html' %}
+
+                        </div>
+
+                    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchinput = document.getElementById('searchinput');
+    const filterAgency = document.getElementById('filterAgency');
+    const filterStatut = document.getElementById('statut');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const rows = document.querySelectorAll('#TicketTableBody tr');
+
+    // 🔧 Normalisation
+    function normalizeText(text) {
+        return (text || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    // Convertit un texte en token standard (pour statut)
+    function toToken(text) {
+        return normalizeText(text).replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    }
+
+    // ✨ Surbrillance
+    function highlightText(element, query) {
+        if (!element) return;
+        const raw = element.textContent;
+        if (!query) { element.innerHTML = raw; return; }
+        const regex = new RegExp(`(${query})`, 'gi');
+        element.innerHTML = raw.replace(regex, '<mark>$1</mark>');
+    }
+
+    // 🧮 Filtrage principal
+    function applyFilters() {
+        const q = normalizeText(searchinput.value);
+        const selectedAgency = normalizeText(filterAgency.value);
+        const selectedStatut = toToken(filterStatut.value);
+
+        // 📅 Dates
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+        rows.forEach(row => {
+            const agency = row.querySelector('[data-field="agency"]');
+            const ticket_code = row.querySelector('[data-field="ticket_code"]');
+            const status = row.querySelector('[data-field="status"]');
+            const customer = row.querySelector('[data-field="customer"]');
+            const phone = row.querySelector('[data-field="mobile_money_phone_number"]');
+            const updated_at = row.querySelector('[data-field="updated_at"]');
+
+            const agencyText = normalizeText(agency?.textContent);
+            const statusToken = toToken(status?.textContent);
+            const ticketCodeText = normalizeText(ticket_code?.textContent);
+            const customerText = normalizeText(customer?.textContent);
+            const phoneText = normalizeText(phone?.textContent);
+            const updatedDate = updated_at ? new Date(updated_at.textContent.trim()) : null;
+
+            // 🔍 Recherche texte
+            const matchesSearch =
+                customerText.includes(q) ||
+                ticketCodeText.includes(q) ||
+                phoneText.includes(q);
+
+            // 🏬 Filtre agence
+            let matchesAgency = true;
+            if (selectedAgency) {
+                matchesAgency = agencyText.includes(selectedAgency);
+            }
+
+            // 💰 Filtre statut
+            let matchesStatut = true;
+            if (selectedStatut) {
+                matchesStatut = (statusToken === selectedStatut);
+            }
+
+            // 📅 Filtre de date
+            let matchesDate = true;
+            if (startDate && updatedDate && updatedDate < startDate) {
+                matchesDate = false;
+            }
+            if (endDate && updatedDate && updatedDate > endDate) {
+                matchesDate = false;
+            }
+
+            // ✅ Condition finale
+            const match = matchesSearch && matchesAgency && matchesStatut && matchesDate;
+            row.style.display = match ? '' : 'none';
+
+            [customer, phone, agency, ticket_code].forEach(cell => {
+                if (cell) highlightText(cell, q);
+            });
+        });
+    }
+
+    // 🎯 Événements
+    [searchinput, filterAgency, filterStatut, startDateInput, endDateInput].forEach(el => {
+        el.addEventListener('change', applyFilters);
+        el.addEventListener('keyup', applyFilters);
+    });
+
+    // ⚙️ Compatibilité Select2
+    if (window.jQuery && jQuery.fn && jQuery.fn.select2) {
+        jQuery(filterAgency).on('select2:select select2:clear', applyFilters);
+        jQuery(filterStatut).on('select2:select select2:clear', applyFilters);
+    }
+
+    // Initialisation
+    applyFilters();
+});
+</script>
+
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+

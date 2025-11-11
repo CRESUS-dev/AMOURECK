@@ -14,4 +14,6 @@ urlpatterns = [
     path('agencies/', AgencyListView.as_view(), name='agencies_list'),
     path('agency/edit/<int:pk>/', AgencyEditView.as_view(), name='agency_edit'),
     path('agency/delete/<int:pk>/', AgencyDeleteView.as_view(), name='agency_delete'),
+
+
 ]

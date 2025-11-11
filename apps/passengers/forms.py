@@ -77,7 +77,7 @@ class TicketForm(forms.ModelForm):
             self.fields['ticket_price_currency'].widget = HiddenInput()
 
     def clean_ticket_price(self):
-        """Verrouille la devise côté serveur (anti-triche)."""
+        """Verrouille la devise côté serveur ."""
         money = self.cleaned_data['ticket_price']
         cur = 'XOF'
         if getattr(self, '_request', None) and hasattr(self._request, 'session'):
