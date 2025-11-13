@@ -31,15 +31,18 @@ class AccountingForm(forms.ModelForm):
 
         # 1) get the currency inn the session
         currency ='XOF'
+
+
         if request and hasattr(request, 'session'):
             currency = request.session.get('currency', 'XOF')
 
+
         field = self.fields.get('amount')
         # --- CAS le plus courant : MoneyField -> MultiValueField (amount + currency) ---
-        if field and hasattr(field, 'fields') and len(field.fields)>1: # vérifie que le champ field existe et possède 2 sous champs
-            # a) resteindre le sous champ devise
-            currency_subfield = field.fields[1] # récupérer le sous champ de la devise
-            currency_subfield.choices = [(currency, currency)] # limiter le choix à la devise de la session
+        if field and hasattr(field, 'fields') and len(field.fields) > 1:
+            # a) restreindre le SOUS-CHAMP devise
+            currency_subfield = field.fields[1]
+            currency_subfield.choices = [(currency, currency)]
 
             # b) indiquer la devise par défaut côté form field
             try:
@@ -58,8 +61,17 @@ class AccountingForm(forms.ModelForm):
                 pass
 
                 # d) initial si rien n’est fourni
-            if not (self.initial.get('ticket_price') or getattr(self.instance, 'ticket_price', None)):
-                self.initial['ticket_price'] = Money(0, currency)
+            if not (self.initial.get('amount') or getattr(self.instance, 'amount', None)):
+                self.initial['amount'] = Money(0, currency)
+
+                # --- CAS alternatif : champ séparé 'ticket_price_currency' exposé par la form ---
+            if 'amount_currency' in self.fields:
+                from django.forms import HiddenInput
+                self.fields['amount_currency'].choices = [(currency, currency)]
+                self.fields['amount_currency'].initial = currency
+                self.fields['amount_currency'].widget = HiddenInput()
+
+
 
 
     def clean_amount(self):
@@ -69,5 +81,6 @@ class AccountingForm(forms.ModelForm):
         if getattr(self, '_request', None) and hasattr(self._request, 'session'):
             cur = self._request.session.get('currency', 'XOF')
         return Money(money.amount, cur)
+
 
 

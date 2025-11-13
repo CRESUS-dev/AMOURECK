@@ -1,0 +1,171 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block main %}
+<main>
+    <div class="container-fluid px-4">
+
+        <h2 class="mt-4">Dashboard - Comptabilité</h2>
+        <hr>
+
+        <!-- FILTRE -->
+        <div class="row justify-content-center">
+
+            <form id="filterForm" method="get" class="shadow p-4 bg-light rounded w-auto">
+                <label class="me-2">Agence :</label>
+            <select name="agency_id" class="form-select d-inline-block w-auto">
+                <option value="">Toutes</option>
+                {% for ag in agencies %}
+                    <option value="{{ ag.id }}" {% if agency_id == ag.id|stringformat:"s" %}selected{% endif %}>
+                        {{ ag.name }}
+                    </option>
+                {% endfor %}
+            </select>
+                <label>Du:</label>
+                <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+
+                <label class="ms-3">Au:</label>
+                <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+
+                <button class="btn btn-outline-primary ms-3" type="submit">Refresh</button>
+            </form>
+        </div>
+
+        <!-- ESPACE -->
+        <div class="my-4"></div>
+
+
+        <!-- TABLEAU -->
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+
+                <div class="shadow p-4 bg-light rounded">
+
+                    <h5 class="text-center mb-3" style="color:rgb(0,67,100)">Compte de Résultat</h5>
+
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead class="table-dark text-center">
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Charges (XOF)</th>
+                                <th>Produits (XOF)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for op in operations %}
+                            <tr class="text-center">
+                                <td>{{ op.date_operation|date:"d/m/Y" }}</td>
+                                <td class="text-start">{{ op.description }}</td>
+
+                                {% if op.operation_type == "CH" %}
+                                    <td>{{ op.amount.amount|intcomma }}</td>
+                                    <td>-</td>
+                                {% else %}
+                                    <td>-</td>
+                                    <td>{{ op.amount.amount|intcomma }}</td>
+                                {% endif %}
+                            </tr>
+
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    Aucune opération trouvée.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+
+                        <tfoot class="table-secondary fw-bold text-center">
+                            <tr>
+                                <td colspan="2" class="text-end">TOTAL :</td>
+
+                                <td>
+    {% if total_charges %}
+        {{ total_charges|intcomma }}
+    {% else %}
+        0
+    {% endif %}
+</td>
+
+                                <td>
+                                    {% if total_produits %}
+                                        {{ total_produits|intcomma }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+{#    Chart#}
+{# <div class="row justify-content-center mt-5">#}
+{#    <div class="col-md-8">#}
+{#        <div class="shadow p-4 bg-light rounded">#}
+{#            <h5 class="text-center mb-3" style="color:rgb(0,67,100)">#}
+{#                Graphique Charges vs Produits (par Agence)#}
+{#            </h5>#}
+{##}
+{#            <canvas id="agencyChart" height="120"></canvas>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+    </div>
+</main>
+{#{% block extra_js %}#}
+{#<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}
+{##}
+{#<script>#}
+{#    const chartData = {{ chart_data|safe }};#}
+{#    const labels = Object.keys(chartData);#}
+{##}
+{#    const charges = labels.map(name => chartData[name].charges);#}
+{#    const produits = labels.map(name => chartData[name].produits);#}
+{##}
+{#    const ctx = document.getElementById("agencyChart");#}
+{##}
+{#    new Chart(ctx, {#}
+{#        type: 'bar',#}
+{#        data: {#}
+{#            labels: labels,#}
+{#            datasets: [#}
+{#                {#}
+{#                    label: 'Charges',#}
+{#                    data: charges,#}
+{#                    backgroundColor: 'rgba(255, 99, 132, 0.6)'#}
+{#                },#}
+{#                {#}
+{#                    label: 'Produits',#}
+{#                    data: produits,#}
+{#                    backgroundColor: 'rgba(75, 192, 192, 0.6)'#}
+{#                }#}
+{#            ]#}
+{#        },#}
+{#        options: {#}
+{#            responsive: true,#}
+{#            plugins: {#}
+{#                legend: { position: 'top' },#}
+{#                title: {#}
+{#                    display: true,#}
+{#                    text: 'Comparatif Charges / Produits'#}
+{#                }#}
+{#            },#}
+{#            scales: {#}
+{#                y: { beginAtZero: true }#}
+{#            }#}
+{#        }#}
+{#    });#}
+{#</script>#}
+{##}
+{#{% endblock %}#}
+
+{% endblock main %}

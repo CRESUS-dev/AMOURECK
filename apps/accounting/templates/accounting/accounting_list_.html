@@ -41,7 +41,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <select  id="type" class="form-select">
+                                <select  id="operationType" class="form-select">
                                     <option value="">Type opération</option>
                                     <option value="CH">Charges</option>
                                     <option value="PD">Produits</option>
@@ -90,7 +90,7 @@
                                 <button
                                    class="btn btn-sm btn-danger"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ ticket.id }}">
+                                    data-bs-target="#deleteModal{{ accounting.id }}">
 
                                     Supprimer
                                 </button>
@@ -102,27 +102,27 @@
 
 
                                 <!-- Modale de confirmation -->
-{#                                    <div class="modal fade" id="deleteModal{{ ticket.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ ticket.id }}" aria-hidden="true">#}
-{#                                      <div class="modal-dialog">#}
-{#                                        <div class="modal-content">#}
-{#                                          <div class="modal-header">#}
-{#                                            <h5 class="modal-title" id="deleteModalLabel{{ ticket.id }}">Confirmation de suppression</h5>#}
-{#                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>#}
-{#                                          </div>#}
-{#                                          <div class="modal-body">#}
-{#                                            Êtes-vous sûr de vouloir supprimer l'agence <strong>{{ticket.ticket_code }}</strong> ?#}
-{#                                          </div>#}
-{#                                          <div class="modal-footer">#}
-{#                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>#}
-{##}
-{#                                            <form method="post" action="{% url 'ticket_delete' ticket.id %}">#}
-{#                                              {% csrf_token %}#}
-{#                                              <button type="submit" class="btn btn-danger">Confirmer</button>#}
-{#                                            </form>#}
-{#                                          </div>#}
-{#                                        </div>#}
-{#                                      </div>#}
-{#                                    </div>#}
+                                    <div class="modal fade" id="deleteModal{{ accounting.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ accounting.id }}" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ accounting.id }}">Confirmation de suppression</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            Êtes-vous sûr de vouloir supprimer cette opération?
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+
+                                            <form method="post" action="{% url 'accounting_delete' accounting.id %}">
+                                              {% csrf_token %}
+                                              <button type="submit" class="btn btn-danger">Confirmer</button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
 
                         </td>
                             </tr>
@@ -141,10 +141,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchinput = document.getElementById('searchinput');
     const filterAgency = document.getElementById('filterAgency');
-    const filterStatut = document.getElementById('statut');
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
-    const rows = document.querySelectorAll('#TicketTableBody tr');
+    const operationType = document.getElementById('operationType')
+    const rows = document.querySelectorAll('#AccountingTableBody tr');
 
     // 🔧 Normalisation
     function normalizeText(text) {
@@ -173,32 +173,33 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyFilters() {
         const q = normalizeText(searchinput.value);
         const selectedAgency = normalizeText(filterAgency.value);
-        const selectedStatut = toToken(filterStatut.value);
+        const selectOperationType = normalizeText(operationType.value);
+
+
 
         // 📅 Dates
         const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
         const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
 
+        // operation
+
+
         rows.forEach(row => {
             const agency = row.querySelector('[data-field="agency"]');
-            const ticket_code = row.querySelector('[data-field="ticket_code"]');
-            const status = row.querySelector('[data-field="status"]');
-            const customer = row.querySelector('[data-field="customer"]');
-            const phone = row.querySelector('[data-field="mobile_money_phone_number"]');
+            const description = row.querySelector('[data-field="description"]');
             const updated_at = row.querySelector('[data-field="updated_at"]');
-
+            const OperationType = row.querySelector('[data-field="operation_type"]');
+            const OperationTypeText = normalizeText(OperationType?.textContent)
             const agencyText = normalizeText(agency?.textContent);
-            const statusToken = toToken(status?.textContent);
-            const ticketCodeText = normalizeText(ticket_code?.textContent);
-            const customerText = normalizeText(customer?.textContent);
-            const phoneText = normalizeText(phone?.textContent);
+
+            const descriptionText = normalizeText(description?.textContent);
             const updatedDate = updated_at ? new Date(updated_at.textContent.trim()) : null;
 
             // 🔍 Recherche texte
             const matchesSearch =
-                customerText.includes(q) ||
-                ticketCodeText.includes(q) ||
-                phoneText.includes(q);
+
+                descriptionText.includes(q);
+
 
             // 🏬 Filtre agence
             let matchesAgency = true;
@@ -206,10 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 matchesAgency = agencyText.includes(selectedAgency);
             }
 
-            // 💰 Filtre statut
-            let matchesStatut = true;
-            if (selectedStatut) {
-                matchesStatut = (statusToken === selectedStatut);
+            //filtre type opération
+            let matchesOperationType = true;
+            if (selectOperationType) {
+                matchesOperationType = OperationTypeText.includes(selectOperationType)
             }
 
             // 📅 Filtre de date
@@ -222,17 +223,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // ✅ Condition finale
-            const match = matchesSearch && matchesAgency && matchesStatut && matchesDate;
+            const match = matchesSearch && matchesAgency  && matchesDate && matchesOperationType;
             row.style.display = match ? '' : 'none';
 
-            [customer, phone, agency, ticket_code].forEach(cell => {
+            [ agency, description].forEach(cell => {
                 if (cell) highlightText(cell, q);
             });
         });
     }
 
     // 🎯 Événements
-    [searchinput, filterAgency, filterStatut, startDateInput, endDateInput].forEach(el => {
+    [searchinput, startDateInput, endDateInput,filterAgency, operationType].forEach(el => {
         el.addEventListener('change', applyFilters);
         el.addEventListener('keyup', applyFilters);
     });
@@ -240,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ⚙️ Compatibilité Select2
     if (window.jQuery && jQuery.fn && jQuery.fn.select2) {
         jQuery(filterAgency).on('select2:select select2:clear', applyFilters);
-        jQuery(filterStatut).on('select2:select select2:clear', applyFilters);
+        jQuery(operationType).on('select2:select select2:clear', applyFilters);
     }
 
     // Initialisation
