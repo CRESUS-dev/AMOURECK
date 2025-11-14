@@ -12,6 +12,7 @@
         <!-- FILTRE -->
         <div class="row justify-content-center">
 
+
             <form id="filterForm" method="get" class="shadow p-4 bg-light rounded w-auto">
                 <label class="me-2">Agence :</label>
             <select name="agency_id" class="form-select d-inline-block w-auto">
@@ -38,6 +39,8 @@
 
         <!-- TABLEAU -->
         <div class="row justify-content-center">
+
+
             <div class="col-md-10">
 
                 <div class="shadow p-4 bg-light rounded">
@@ -83,12 +86,12 @@
                                 <td colspan="2" class="text-end">TOTAL :</td>
 
                                 <td>
-    {% if total_charges %}
-        {{ total_charges|intcomma }}
-    {% else %}
-        0
-    {% endif %}
-</td>
+                                        {% if total_charges %}
+                                            {{ total_charges|intcomma }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                </td>
 
                                 <td>
                                     {% if total_produits %}
@@ -98,74 +101,33 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                        <tr class="table-info">
+        <td colspan="2" class="text-end">RÉSULTAT NET :</td>
+
+        <!-- On colore selon positif ou négatif -->
+        <td colspan="2"
+            class="
+                {% if resultat_net < 0 %} text-danger
+                {% else %} text-success
+                {% endif %}
+                ">
+            {{ resultat_net|intcomma }}
+        </td>
+    </tr>
                         </tfoot>
 
                     </table>
+
+
 
                 </div>
 
             </div>
         </div>
 
-{#    Chart#}
-{# <div class="row justify-content-center mt-5">#}
-{#    <div class="col-md-8">#}
-{#        <div class="shadow p-4 bg-light rounded">#}
-{#            <h5 class="text-center mb-3" style="color:rgb(0,67,100)">#}
-{#                Graphique Charges vs Produits (par Agence)#}
-{#            </h5>#}
-{##}
-{#            <canvas id="agencyChart" height="120"></canvas>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
+
     </div>
 </main>
-{#{% block extra_js %}#}
-{#<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}
-{##}
-{#<script>#}
-{#    const chartData = {{ chart_data|safe }};#}
-{#    const labels = Object.keys(chartData);#}
-{##}
-{#    const charges = labels.map(name => chartData[name].charges);#}
-{#    const produits = labels.map(name => chartData[name].produits);#}
-{##}
-{#    const ctx = document.getElementById("agencyChart");#}
-{##}
-{#    new Chart(ctx, {#}
-{#        type: 'bar',#}
-{#        data: {#}
-{#            labels: labels,#}
-{#            datasets: [#}
-{#                {#}
-{#                    label: 'Charges',#}
-{#                    data: charges,#}
-{#                    backgroundColor: 'rgba(255, 99, 132, 0.6)'#}
-{#                },#}
-{#                {#}
-{#                    label: 'Produits',#}
-{#                    data: produits,#}
-{#                    backgroundColor: 'rgba(75, 192, 192, 0.6)'#}
-{#                }#}
-{#            ]#}
-{#        },#}
-{#        options: {#}
-{#            responsive: true,#}
-{#            plugins: {#}
-{#                legend: { position: 'top' },#}
-{#                title: {#}
-{#                    display: true,#}
-{#                    text: 'Comparatif Charges / Produits'#}
-{#                }#}
-{#            },#}
-{#            scales: {#}
-{#                y: { beginAtZero: true }#}
-{#            }#}
-{#        }#}
-{#    });#}
-{#</script>#}
-{##}
-{#{% endblock %}#}
+
 
 {% endblock main %}

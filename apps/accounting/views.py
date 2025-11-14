@@ -89,6 +89,8 @@ def accounting_table(request):
     total_charges = operations.filter(operation_type="CH").aggregate(total=Sum("amount"))["total"]
     total_produits = operations.filter(operation_type="PD").aggregate(total=Sum("amount"))["total"]
 
+    resultat_net = total_produits-total_charges
+
     # ---- DONNÉES POUR LE GRAPHISTIQUE ----
     chart_data = {}
 
@@ -111,6 +113,7 @@ def accounting_table(request):
         "agency_id": agency_id,
         "agencies": agencies,
         "chart_data": chart_data,
+        "resultat_net":resultat_net,
     }
 
     return render(request, "accounting/accounting_dashboard.html", context)
