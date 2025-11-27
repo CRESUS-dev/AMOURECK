@@ -1,0 +1,105 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+<main>
+{% include 'messages.html' %}
+                    <div class="container-fluid px-4">
+
+                        <h2 class="mt-4">Liste des cartes SIM</h2>
+
+                        <hr>
+
+
+                    <a href="{% url 'simcard_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une SIM</a>
+
+                        <hr>
+                        <div class="row">
+
+
+                        <table class="table table-bordered table-striped">
+
+                          <thead  class="text-center text-white"  style="background: #024e5e">
+                            <tr>
+
+                              <th scope="col" >Opérateur </th>
+                              <th scope="col" >Numéro </th>
+                              <th scope="col" >Solde </th>
+                              <th scope="col" >Action </th>
+
+                            </tr>
+                          </thead>
+                          <tbody id="TicketTableBody">
+                                {% for simcard in simcards %}
+                            <tr>
+
+                              <td  >{{ simcard.operator }}</td>
+                              <td >{{ simcard.number }}</td>
+                              <td >{{ simcard.solde }}</td>
+
+
+                            <!-- Boutons CRUD -->
+                             <td >
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+
+                                   <a href="{% url 'simcard_edit' simcard.id %}" class="btn btn-sm btn-warning">Modifier</a>
+
+                                <button
+                                   class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ simcard.id }}">
+
+                                    Supprimer
+                                </button>
+{#                            {% endif %}#}
+                        </div>
+                            </td>
+                    </tr>
+
+
+
+                                <!-- Modale de confirmation -->
+                                    <div class="modal fade" id="deleteModal{{ simcard.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ simcard.id }}" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ simcard.id }}">Confirmation de suppression</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            Êtes-vous sûr de vouloir supprimer l'opérateur <strong>{{simcard.number }} de {{ simcard.operator }}</strong> ?
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+
+                                            <form method="post" action="{% url 'simcard_delete' simcard.id %}">
+                                              {% csrf_token %}
+                                              <button type="submit" class="btn btn-danger">Confirmer</button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                        </td>
+                            </tr>
+
+                                {% endfor %}
+
+                          </tbody>
+                        </table>
+                           {% include 'pagination.html' %}
+
+                        </div>
+
+                    </div>
+
+
+                </main>
+
+{% endblock main %}
+
+
+
+
+
+

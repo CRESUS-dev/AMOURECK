@@ -7,16 +7,34 @@ from datetime import date
 from apps.country.models import Agency
 
 OPEREATION_TYPE_CHOICE = (
-    ('PD', 'Produits'),
-    ('CH','Charges'),
-
+    ("PD", "Produits"),
+    ("CH", "Charges"),
 )
+
+
 class Accounting(TimeStampedModel):
     agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
-    operation_type = models.CharField(max_length=5, verbose_name="Type opération", choices=OPEREATION_TYPE_CHOICE, blank=False, null=False)
+    operation_type = models.CharField(
+        max_length=5,
+        verbose_name="Type opération",
+        choices=OPEREATION_TYPE_CHOICE,
+        blank=False,
+        null=False,
+    )
     date_operation = models.DateField(verbose_name="Date opération", default=date.today)
-    description = models.CharField(max_length=500, verbose_name="Description", blank=False, null=False )
-    amount = MoneyField(verbose_name='Montant', max_digits=12, decimal_places=0,default=Money(0, 'XOF'))
-
-
-
+    description = models.CharField(
+        max_length=500, verbose_name="Description", blank=False, null=False
+    )
+    amount = MoneyField(
+        verbose_name="Montant", max_digits=12, decimal_places=0, default=Money(0, "XOF")
+    )
+    commission = models.OneToOneField(
+        "transferts.Commission",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="accounting_entry",
+    )
+    currency = models.CharField(
+        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    )

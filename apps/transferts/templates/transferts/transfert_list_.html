@@ -1,0 +1,172 @@
+{% extends 'sidebar.html' %}
+{% load humanize %}
+
+{% block main %}
+    <main>
+        {% include 'messages.html' %}
+        <div class="container-fluid px-4">
+
+            <h2 class="mt-4">Situation des transferts</h2>
+
+            <hr>
+
+
+            <a href="{% url 'simcard_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un transfert</a>
+
+            <hr>
+            <div class="row">
+
+                <!-- Champ de recherche -->
+                <div class="justify-content-center " style="background: #eae8e8; border-radius:10px">
+                    <div class="row mb-3 ">
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">📅 Date début</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">📅 Date fin</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <input type="text" id="searchinput" class="form-control mb-3"
+                                   placeholder="🔍 Recherche par Nom, prénoms, Tél">
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filterAgency" class="form-select ">
+                                <option value="">🏬Toutes les agences</option>
+                                {% for agency in agencies %}
+                                    <option value="{{ agency.name | lower }}">{{ agency.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="statut" class="form-select">
+                                <option value="">Statut</option>
+                                <option value="PAYE">PAYE</option>
+                                <option value="NON_PAYE">NON_PAYE</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+
+                    <thead class="text-center text-black text-bg-light ">
+                    <tr>
+
+                        <th scope="col">Agence</th>
+                        <th scope="col">Carte SIM</th>
+                        <th scope="col">Type Opération</th>
+                        <th scope="col">N° Client</th>
+                        <th scope="col">Montant</th>
+                        <th scope="col">Commission</th>
+                        <th scope="col">Capture</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="TransfertTableBody">
+                    {% for transfert in transferts %}
+                        <tr>
+
+                            <td>{{ transfert.agency }}</td>
+                            <td>{{ transfert.sim_card }}</td>
+                            <td>
+                                {% if transfert.operation_type == "S" %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-arrow-down"></i> {{ transfert.get_operation_type_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-arrow-up"></i> {{ transfert.get_operation_type_display }}
+                                    </span>
+                                {% endif %}
+
+                            </td>
+                            <td>{{ transfert.number }}</td>
+                            <td>{{ transfert.amount.amount|intcomma }} {{ transfert.amount.currency }}</td>
+
+
+                            <td>{{ transfert.commission_amount.amount|intcomma }} {{ transfert.commission_amount.currency }}</td>
+
+                            <td>
+                                {% if transfert.screenshot %}
+                                    <a href="{{ transfert.screenshot.url }}">
+                                        <img src="{{ transfert.screenshot.url }}" width="60" height="60"
+                                             style="object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                                    </a>
+                                {% endif %}
+                            </td>
+
+
+                            <!-- Boutons CRUD -->
+                            <td>
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+
+                                    <button
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ simcard.id }}">
+
+                                        Supprimer
+                                    </button>
+                                    {#                            {% endif %}#}
+                                </div>
+                            </td>
+                        </tr>
+
+
+
+                        <!-- Modale de confirmation -->
+                        <div class="modal fade" id="deleteModal{{ simcard.id }}" tabindex="-1"
+                             aria-labelledby="deleteModalLabel{{ simcard.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ simcard.id }}">Confirmation de
+                                            suppression</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Fermer"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Êtes-vous sûr de vouloir supprimer l'opérateur <strong>{{ simcard.number }}
+                                        de {{ simcard.operator }}</strong> ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Annuler
+                                        </button>
+
+                                        {#                                        <form method="post" action="{% url 'simcard_delete' simcard.id %}">#}
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Confirmer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                {% include 'pagination.html' %}
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+{% endblock main %}
+
+
+
+
+
+

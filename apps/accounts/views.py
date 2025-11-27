@@ -30,7 +30,6 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
-
         selected_agency = form.cleaned_data.get('agency')
         # vérifier si l'utilisateur a des succursales assignées
         if not user.agencies.exists():

@@ -14,6 +14,7 @@ urlpatterns = [
     path('', include('apps.passengers.urls')),
     path('', include('apps.package.urls')),
     path('', include('apps.accounting.urls')),
+    path('', include('apps.transferts.urls')),
 
 ]
 

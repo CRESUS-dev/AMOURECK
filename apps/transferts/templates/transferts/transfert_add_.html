@@ -1,0 +1,150 @@
+{% extends 'sidebar.html' %}
+
+{% block main %}
+
+    <main>
+        <div class="container-fluid px-4">
+            <h2 class="mt-4">Ajout d'un transfert</h2>
+
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+
+                    <form id="customerForm" method="post" class="shadow p-4 bg-light rounded">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.sim_card.label_tag }}
+                            {{ form.sim_card }}
+                            {% if form.sim_card.errors %}
+                                <div class="text-danger">
+                                    {{ form.sim_card.errors }}
+                                </div>
+                            {% endif %}
+                            <div id="sim-info-box"
+                                 style=" padding:10px; border:2px solid #6c757d; margin-top:10px;">
+                                <b>Solde SIM : </b> <span id="sim-balance"></span>
+                                <br>
+                                <b>Devise : </b> <span id="sim-currency"></span>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="mb-3">
+                            {{ form.operation_type.label_tag }}
+                            {{ form.operation_type }}
+                            {% if form.operation_type.errors %}
+                                <div class="text-danger">
+                                    {{ form.operation_type.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.number.label_tag }}
+                            {{ form.number }}
+                            {% if form.number.errors %}
+                                <div class="text-danger">
+                                    {{ form.number.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 d-flex gap-2">
+                            {{ form.amount.label_tag }}
+                            {{ form.amount }}
+                            {% if form.amount.errors %}
+                                <div class="text-danger">
+                                    {{ form.amount.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 d-flex gap-2">
+                            {{ form.commission_amount.label_tag }}
+                            {{ form.commission_amount }}
+                            {% if form.commission_amount.errors %}
+                                <div class="text-danger">
+                                    {{ form.commission_amount.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.screenshot.label_tag }}
+                            {{ form.screenshot }}
+                            {% if form.screenshot.errors %}
+                                <div class="text-danger">
+                                    {{ form.screenshot.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <button type="submit" class="btn  text-light w-100" style="background: #04414d">Enregistrer
+                        </button>
+
+                        {% for error in form.non_field_errors %}
+                            <div style="color: red;">{{ error }}</div>
+                        {% endfor %}
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+{% endblock main %}
+
+{% block extra_js %}
+
+    <script>
+   
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("🔥 Script chargé !");
+
+            let simSelect = document.getElementById("id_sim_card");
+            console.log("🎯 simSelect =", simSelect);
+
+            simSelect.addEventListener("change", function () {
+                console.log("🎉 SIM sélectionnée :", this.value);
+
+                let simId = this.value;
+                if (!simId) return;
+
+                fetch(`/sim-info/${simId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("📦 Données API :", data);
+
+                        // Afficher solde
+                        document.getElementById("sim-balance").innerText = data.balance;
+                        document.getElementById("sim-currency").innerText = data.currency;
+
+                        document.getElementById("sim-info-box").style.display = "block";
+
+                        // Mise à jour devise MoneyField
+                        updateMoneyFieldCurrency("id_amount_1", data.currency);
+                        updateMoneyFieldCurrency("id_commission_amount_1", data.currency);
+                    });
+            });
+
+            function updateMoneyFieldCurrency(selectId, currency) {
+                let select = document.getElementById(selectId);
+                console.log("Mise à jour devise pour :", selectId, select);
+
+                if (select) {
+                    select.innerHTML = `<option value="${currency}" selected>${currency}</option>`;
+                }
+            }
+        });
+    </script>
+
+
+{% endblock extra_js %}
+
+
+
+
+

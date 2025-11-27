@@ -14,23 +14,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('DJANGO_SECRET_KEY')
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config("DEBUG", default=False, cast=bool)
-DEBUG = config('DEBUG')
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=Csv() )
+DEBUG = config("DEBUG")
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", cast=Csv())
 
-CSRF_TRUSTED_ORIGINS = config("DJANGO_CSRF_TRUSTED_ORIGINS",cast=Csv())
+CSRF_TRUSTED_ORIGINS = config("DJANGO_CSRF_TRUSTED_ORIGINS", cast=Csv())
 
 DATABASES = {
-    'default': {
-        'ENGINE': config('SQL_ENGINE', default='django.db.backends.postgresql').strip(),
-        'NAME': config('SQL_DATABASE'),
-        'USER': config('SQL_USER'),
-        'PASSWORD': config('SQL_PASSWORD'),
-        'HOST': config('SQL_HOST', default='localhost'),
-        'PORT': config('SQL_PORT', default='5432'),
+    "default": {
+        "ENGINE": config("SQL_ENGINE", default="django.db.backends.postgresql").strip(),
+        "NAME": config("SQL_DATABASE"),
+        "USER": config("SQL_USER"),
+        "PASSWORD": config("SQL_PASSWORD"),
+        "HOST": config("SQL_HOST", default="localhost"),
+        "PORT": config("SQL_PORT", default="5432"),
     }
 }
 
@@ -54,24 +54,19 @@ INSTALLED_APPS = [
     "apps.customer",
     "apps.passengers",
     "simple_history",
-    'django_select2',
+    "django_select2",
     "apps.package",
     "apps.chat",
     "django_extensions",
     "channels",
     "apps.accounting",
-    'django.contrib.humanize',
-
-
+    "django.contrib.humanize",
+    "phonenumber_field",
+    "apps.transferts.apps.TransfertsConfig",
 ]
 
 # Dev: mémoire (suffisant en local)
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
 ASGI_APPLICATION = "AMOURECK.asgi.application"
@@ -86,7 +81,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
-    "apps.core.middleware.current_request.CurrentRequestMiddleware"
+    "apps.core.middleware.current_request.CurrentRequestMiddleware",
 ]
 
 ROOT_URLCONF = "AMOURECK.urls"
@@ -94,8 +89,7 @@ ROOT_URLCONF = "AMOURECK.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates']  # globals templates
-        ,
+        "DIRS": [BASE_DIR / "templates"],  # globals templates
         "APP_DIRS": True,  # apps templates
         "OPTIONS": {
             "context_processors": [
@@ -129,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 JAZZMIN_SETTINGS = {
     "site_title": "Administration AMOURECK",
@@ -146,11 +140,11 @@ JAZZMIN_SETTINGS = {
 
 # os.getenvuration des messages d'erreur
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.DEBUG: "alert-info",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
 }
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -170,41 +164,41 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # collectstatic en prod
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # collectstatic en prod
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "static"),
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = reverse_lazy('dashboard')
-LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = reverse_lazy("dashboard")
+LOGOUT_REDIRECT_URL = "/login/"
 
 # Media files (users uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Security settings.old
-SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT')
-CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE')
-SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE')
-SECURE_HSTS_SECONDS = os.getenv('SECURE_HSTS_SECONDS')
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT")
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE")
+SECURE_HSTS_SECONDS = os.getenv("SECURE_HSTS_SECONDS")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-INTERNAL_IPS = [
-    "127.0.0.1"
-]
+INTERNAL_IPS = ["127.0.0.1"]
 
 CURRENCY_CHOICES = [
-    ('XOF', 'Franc CFA BCEAO'),
-    ('GNF', 'Franc Guinéen'),
-    ('USD', 'Dollar Américain'),
-    ('EUR', 'Euro'),
+    ("XOF", "Franc CFA BCEAO"),
+    ("GNF", "Franc Guinéen"),
+    ("USD", "Dollar Américain"),
+    ("EUR", "Euro"),
 ]
 
-DEFAULT_CURRENCY = 'XOF'
+DEFAULT_CURRENCY = "XOF"
+PHONENUMBER_DEFAULT_REGION = None
+PHONENUMBER_DEFAULT_FORMAT = "E164"

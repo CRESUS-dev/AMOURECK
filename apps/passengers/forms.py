@@ -69,12 +69,7 @@ class TicketForm(forms.ModelForm):
             if not (self.initial.get('ticket_price') or getattr(self.instance, 'ticket_price', None)):
                 self.initial['ticket_price'] = Money(0, currency)
 
-        # --- CAS alternatif : champ séparé 'ticket_price_currency' exposé par la form ---
-        if 'ticket_price_currency' in self.fields:
-            from django.forms import HiddenInput
-            self.fields['ticket_price_currency'].choices = [(currency, currency)]
-            self.fields['ticket_price_currency'].initial = currency
-            self.fields['ticket_price_currency'].widget = HiddenInput()
+
 
     def clean_ticket_price(self):
         """Verrouille la devise côté serveur ."""
