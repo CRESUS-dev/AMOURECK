@@ -45,11 +45,12 @@ class Ticket(TimeStampedModel):
     )
     departure_date = models.DateField(verbose_name="Date de départ")
     departure_hour = models.TimeField(verbose_name="Heure de départ")
-    ticket_price = MoneyField(
+    ticket_price = models.DecimalField(
         verbose_name="Montant du billet",
         max_digits=12,
         decimal_places=0,
-        default=Money(0, "XOF"),
+        blank=False,
+        null=False,
     )
     payment_method = models.CharField(
         verbose_name="Mode de paiement",
@@ -67,8 +68,12 @@ class Ticket(TimeStampedModel):
         default="",
     )
     status = models.CharField(verbose_name="Statut", max_length=15, choices=STATUS)
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
     )
     history = HistoricalRecords()  # ajout de l'historique
 

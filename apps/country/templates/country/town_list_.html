@@ -1,97 +1,103 @@
 {% extends 'sidebar.html' %}
 
 {% block main %}
-<main>
-{% include 'messages.html' %}
-                    <div class="container-fluid px-4">
+    <main>
+        {% include 'messages.html' %}
+        <div class="container-fluid px-4">
 
-                        <h2 class="mt-4">Liste des villes</h2>
+            <h2 class="mt-4">Liste des villes</h2>
 
-                        <hr>
+            <hr>
 
 
-                    <a href="{% url 'town_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une ville</a>
+            <a href="{% url 'town_add' %}" class="btn btn-sm btn-outline-primary">Ajouter une ville</a>
 
-                        <hr>
-                        <div class="row">
+            <hr>
+            <div class="row">
 
-                          <!-- Champ de recherche -->
-{#                           {% include 'search_form.html' %}#}
+                <!-- Champ de recherche -->
+                {#                           {% include 'search_form.html' %}#}
 
-                        <table class="table table-bordered table-striped">
-                          <thead>
-                            <tr>
-                              <th scope="col" >Nom </th>
-                              <th scope="col" >Pays </th>
+                <table class="table table-bordered table-striped">
+                    <thead class=" text-white" style="background: #198754">
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Pays</th>
+                        <th scope="col">Action</th>
 
-                            </tr>
-                          </thead>
-                          <tbody>
-                                {% for town in towns %}
-                            <tr>
-                              <td >{{ town.name }}</td>
-                              <td >{{ town.country }}</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for town in towns %}
+                        <tr>
+                            <td>{{ town.name }}</td>
+                            <td>{{ town.country }}</td>
 
 
                             <!-- Boutons CRUD -->
-                             <td >
+                            <td>
                                 <div class="d-flex flex-column flex-sm-row gap-2">
-{#                                {% if perms.products.change_product %}#}
+                                    {#                                {% if perms.products.change_product %}#}
                                     <a href="{% url 'town_edit' town.id %}" class="btn btn-sm btn-warning">Modifier</a>
 
-        {#                                {% endif %}#}
+                                    {#                                {% endif %}#}
 
-        {#                            {% if perms.products.delete_product %}#}
-                                <button
-                                   class="btn btn-sm btn-danger"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ town.id }}">
+                                    {#                            {% if perms.products.delete_product %}#}
+                                    <button
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ town.id }}">
 
-                                    Supprimer
-                                </button>
-{#                            {% endif %}#}
-                        </div>
+                                        Supprimer
+                                    </button>
+                                    {#                            {% endif %}#}
+                                </div>
                             </td>
-                    </tr>
+                        </tr>
 
 
 
-                                <!-- Modale de confirmation -->
-                                    <div class="modal fade" id="deleteModal{{ town.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ town.id }}" aria-hidden="true">
-                                      <div class="modal-dialog">
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ town.id }}">Confirmation de suppression</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                                          </div>
-                                          <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer la ville <strong>{{town.name }}</strong> ?
-                                          </div>
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-
-                                            <form method="post" action="{% url 'town_delete' town.id %}">
-                                              {% csrf_token %}
-                                              <button type="submit" class="btn btn-danger">Confirmer</button>
-                                            </form>
-                                          </div>
-                                        </div>
-                                      </div>
+                        <!-- Modale de confirmation -->
+                        <div class="modal fade" id="deleteModal{{ town.id }}" tabindex="-1"
+                             aria-labelledby="deleteModalLabel{{ town.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ town.id }}">Confirmation de
+                                            suppression</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Fermer"></button>
                                     </div>
+                                    <div class="modal-body">
+                                        Êtes-vous sûr de vouloir supprimer la ville <strong>{{ town.name }}</strong> ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Annuler
+                                        </button>
+
+                                        <form method="post" action="{% url 'town_delete' town.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Confirmer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         </td>
-                            </tr>
+                        </tr>
 
-                                {% endfor %}
+                    {% endfor %}
 
-                          </tbody>
-                        </table>
-                           {% include 'pagination.html' %}
+                    </tbody>
+                </table>
+                {% include 'pagination.html' %}
 
-                        </div>
+            </div>
 
-                    </div>
-                </main>
+        </div>
+    </main>
 
 {% endblock main %}
 

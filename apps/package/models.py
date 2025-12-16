@@ -1,5 +1,5 @@
 from django.db import models
-from apps.core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel, Currency
 from apps.customer.models import CustomUser
 
 
@@ -63,8 +63,8 @@ class Package(TimeStampedModel):
         verbose_name="Description du colis", max_length=500, null=False, blank=False
     )
     package_count = models.PositiveIntegerField(verbose_name="Nombre de colis")
-    price = MoneyField(
-        verbose_name="Prix", max_digits=12, decimal_places=0, default=Money(0, "XOF")
+    price = models.DecimalField(
+        verbose_name="Prix", max_digits=12, decimal_places=0, blank=False, null=False
     )
     payment_method = models.CharField(
         verbose_name="Mode de paiement",
@@ -82,8 +82,12 @@ class Package(TimeStampedModel):
         default="",
     )
     status = models.CharField(verbose_name="Statut", max_length=15, choices=STATUS)
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
     )
     history = HistoricalRecords()  # ajout de l'historique
 

@@ -1,5 +1,5 @@
 {% extends 'sidebar.html' %}
-
+{% load humanize %}
 {% block main %}
 
     <main>
@@ -11,7 +11,8 @@
                 <div class="col-md-6">
 
 
-                    <form id="customerForm" method="post" class="shadow p-4 bg-light rounded">
+                    <form id="customerForm" method="post" enctype="multipart/form-data"
+                          class="shadow p-4 bg-light rounded">
                         {% csrf_token %}
                         <div class="mb-3">
                             {{ form.sim_card.label_tag }}
@@ -50,7 +51,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="mb-3 d-flex gap-2">
+                        <div class="mb-3">
                             {{ form.amount.label_tag }}
                             {{ form.amount }}
                             {% if form.amount.errors %}
@@ -59,7 +60,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="mb-3 d-flex gap-2">
+                        <div class="mb-3">
                             {{ form.commission_amount.label_tag }}
                             {{ form.commission_amount }}
                             {% if form.commission_amount.errors %}
@@ -100,44 +101,58 @@
 {% block extra_js %}
 
     <script>
-   
+        function formatNumber(value) {
+            const number = Number(value);
+            if (isNaN(number)) return value;
+
+            return new Intl.NumberFormat("fr-FR").format(number);
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
-            console.log("🔥 Script chargé !");
 
-            let simSelect = document.getElementById("id_sim_card");
-            console.log("🎯 simSelect =", simSelect);
+            // Fonction métier centrale
+            function handleSimChange(simId) {
 
-            simSelect.addEventListener("change", function () {
-                console.log("🎉 SIM sélectionnée :", this.value);
-
-                let simId = this.value;
                 if (!simId) return;
 
-                fetch(`/sim-info/${simId}/`)
-                    .then(response => response.json())
+                fetch(`/transfert/ajax/simcard-context/?sim_id=${simId}`)
+                    .then(r => r.json())
                     .then(data => {
-                        console.log("📦 Données API :", data);
 
-                        // Afficher solde
-                        document.getElementById("sim-balance").innerText = data.balance;
-                        document.getElementById("sim-currency").innerText = data.currency;
+                        // ---- Devise (formulaire) ----
+                        const currencySelect = document.getElementById("id_currency");
+                        if (currencySelect && data.currency) {
+                            currencySelect.innerHTML = "";
+                            const opt = document.createElement("option");
+                            opt.value = data.currency;
+                            opt.textContent = data.currency;
+                            opt.selected = true;
+                            currencySelect.appendChild(opt);
+                        }
+
+                        // ---- Infos SIM ----
+                        const formattedBalance = formatNumber(data.balance);
+                        document.getElementById("sim-balance").textContent =
+                            `${formattedBalance}`;
+
+                        document.getElementById("sim-currency").textContent =
+                            data.currency;
 
                         document.getElementById("sim-info-box").style.display = "block";
-
-                        // Mise à jour devise MoneyField
-                        updateMoneyFieldCurrency("id_amount_1", data.currency);
-                        updateMoneyFieldCurrency("id_commission_amount_1", data.currency);
-                    });
-            });
-
-            function updateMoneyFieldCurrency(selectId, currency) {
-                let select = document.getElementById(selectId);
-                console.log("Mise à jour devise pour :", selectId, select);
-
-                if (select) {
-                    select.innerHTML = `<option value="${currency}" selected>${currency}</option>`;
-                }
+                    })
+                    .catch(err => console.error(" Erreur fetch :", err));
             }
+
+            //  EVENT DELEGATION (clé)
+            document.addEventListener("change", function (event) {
+
+                const target = event.target;
+
+                // On vérifie que c'est bien le champ SIM
+                if (target && target.id === "id_sim_card") {
+                    handleSimChange(target.value);
+                }
+            });
         });
     </script>
 

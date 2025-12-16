@@ -15,3 +15,8 @@ class EnterpriseAdmin(admin.ModelAdmin):
         return "-"
 
     image_tag.short_description = "Logo"
+
+
+@admin.register(Currency)
+class CurrencyAdmin(admin.ModelAdmin):
+    list_display = ["name", "code"]

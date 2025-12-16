@@ -10,20 +10,30 @@ from django.conf import settings
 from datetime import datetime
 from simple_history.models import HistoricalRecords
 import os
+
 logger = logging.getLogger(__name__)
 
 
 def profil_directory_path(instance, filename):
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     base = os.path.splitext(filename)[0]  # nom sans extension
     filename = f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.{ext}"
     return f"profil/{datetime.now().strftime('%Y/%m/%d')}/{filename}"
 
+
 class CustomUser(AbstractUser):
-    countries = models.ManyToManyField(Country, blank=False, related_name="users_per_country")
-    agencies = models.ManyToManyField(Agency, blank=False, related_name="users_per_agency")
-    profil_picture = models.FileField(upload_to=profil_directory_path, blank=True, null=True)
+    countries = models.ManyToManyField(
+        Country, blank=False, related_name="users_per_country"
+    )
+    agencies = models.ManyToManyField(
+        Agency, blank=False, related_name="users_per_agency"
+    )
+    profil_picture = models.FileField(
+        upload_to=profil_directory_path, blank=True, null=True
+    )
+
     history = HistoricalRecords()  # ajout de l'historique
+
     def is_admin(self):
         return self.is_superuser  # Vérifier si l'utilisateur est admin
 
@@ -77,9 +87,8 @@ class LoginHistory(models.Model):
     ip_address = models.GenericIPAddressField()
     user_agent = models.CharField(max_length=255, blank=True, null=True)
 
-
     class Meta:
-        ordering = ['-login_time']
+        ordering = ["-login_time"]
         verbose_name = "Historique de connexion"
         verbose_name_plural = "Historiques de connexion"
 

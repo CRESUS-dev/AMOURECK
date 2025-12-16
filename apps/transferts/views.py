@@ -87,19 +87,6 @@ class SimCardDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "La carte SIM est supprimée avec succès"
 
 
-def get_sim_info(request, sim_id):
-    try:
-        sim = SimCard.objects.get(id=sim_id)
-        return JsonResponse(
-            {
-                "balance": float(sim.balance.amount),
-                "currency": sim.balance.currency.code,
-            }
-        )
-    except SimCard.DoesNotExist:
-        return JsonResponse({"error": "not found"}, status=404)
-
-
 class TransferListView(LoginRequiredMixin, ListView):
     model = Transfert
     template_name = "transferts/transfert_list.html"
@@ -122,11 +109,12 @@ class TransfertAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         cleaned = form.cleaned_data
 
-        sim = cleaned["sim_card"]
+        sim_card = cleaned["sim_card"]
         amount = cleaned["amount"]
         commission = cleaned["commission_amount"]
         operation_type = cleaned["operation_type"]
 
+        # sim_currency = sim.currency_id
         # On récupère l'agence de la session
         agency_id = self.request.session.get("agency_id")
 
@@ -140,11 +128,12 @@ class TransfertAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         # Appel du service avec agency obligatoire
         try:
             self.object = TransfertService.create_transfert(
-                sim=sim,
+                sim_card=sim_card,
                 amount=amount,
                 commission_amount=commission,
                 operation_type=operation_type,
                 agency_id=agency_id,
+                currency_id=sim_card.currency,
                 **extra_kwargs,
             )
         except Exception as e:
@@ -156,3 +145,20 @@ class TransfertAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_invalid(self, form):
 
         return super().form_invalid(form)
+
+
+def simcard_context(request):
+    sim_id = request.GET.get("sim_id")
+
+    try:
+        sim = SimCard.objects.get(id=sim_id)
+        return JsonResponse(
+            {
+                "currency": (
+                    sim.currency.code if hasattr(sim.currency, "code") else sim.currency
+                ),
+                "balance": str(sim.balance),
+            }
+        )
+    except SimCard.DoesNotExist:
+        return JsonResponse({"error": "SIM non autorisée"}, status=403)

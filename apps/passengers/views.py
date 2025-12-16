@@ -64,8 +64,8 @@ class TicketCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         agency_id = self.request.session.get("agency_id")
         customer_id = self.request.POST.get("customer_id")
-        currency = self.request.session.get("currency", "XOF")
-        form.instance.currency = currency
+        currency_id = self.request.session.get("currency_id")
+        form.instance.currency_id = currency_id
         form.instance.agency_id = agency_id
 
         # associer le client sélectionné

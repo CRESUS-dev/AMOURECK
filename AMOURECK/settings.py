@@ -193,10 +193,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 INTERNAL_IPS = ["127.0.0.1"]
 
 CURRENCY_CHOICES = [
-    ("XOF", "Franc CFA BCEAO"),
-    ("GNF", "Franc Guinéen"),
-    ("USD", "Dollar Américain"),
-    ("EUR", "Euro"),
+    (1, "Franc CFA BCEAO"),
+    (2, "Franc Guinéen"),
 ]
 
 DEFAULT_CURRENCY = "XOF"

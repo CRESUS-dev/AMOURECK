@@ -1,5 +1,5 @@
 from django.db import models
-from apps.core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel, Currency
 from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
@@ -25,7 +25,7 @@ class Accounting(TimeStampedModel):
     description = models.CharField(
         max_length=500, verbose_name="Description", blank=False, null=False
     )
-    amount = MoneyField(
+    amount = models.DecimalField(
         verbose_name="Montant", max_digits=12, decimal_places=0, default=Money(0, "XOF")
     )
     commission = models.OneToOneField(
@@ -35,6 +35,10 @@ class Accounting(TimeStampedModel):
         blank=True,
         related_name="accounting_entry",
     )
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
     )

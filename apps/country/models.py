@@ -1,8 +1,10 @@
 from django.db import models, connection, transaction
-from apps.core.models import TimeStampedModel, NamedModel
+from apps.core.models import TimeStampedModel, NamedModel, Currency
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from apps.core.mixins.session_user_mixin import SessionUserMixin # custom mixin witch get user, agency_id
+from apps.core.mixins.session_user_mixin import (
+    SessionUserMixin,
+)  # custom mixin witch get user, agency_id
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
 import re
@@ -14,59 +16,103 @@ from django.db.models import UniqueConstraint
 from psycopg2 import sql
 
 
-
 # Create your models here.
 class Country(TimeStampedModel, NamedModel, SessionUserMixin):
     name = models.CharField(verbose_name="Nom", max_length=255, unique=True)
-    iso_code= models.CharField(verbose_name="Code ISO du pays", max_length=2,blank=False, null=False, unique=True)
-    currency = models.CharField(verbose_name="Devise",max_length=10, blank=False, null=False)
+    iso_code = models.CharField(
+        verbose_name="Code ISO du pays",
+        max_length=2,
+        blank=False,
+        null=False,
+        unique=True,
+    )
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+    )
     is_active = models.BooleanField(default=False)
     history = HistoricalRecords()  # ajout de l'historique
+
     class Meta:
         verbose_name = "Pays"
         verbose_name_plural = "Pays"
-
 
     def __str__(self):
         return f"{self.name} ({self.iso_code})"
 
 
 class Town(TimeStampedModel, NamedModel, SessionUserMixin):
-    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.PROTECT, related_name="villes", blank=False, null=False)
+    country = models.ForeignKey(
+        Country,
+        verbose_name="Pays",
+        on_delete=models.PROTECT,
+        related_name="villes",
+        blank=False,
+        null=False,
+    )
     history = HistoricalRecords()  # ajout de l'historique
+
     class Meta:
         verbose_name = "Ville"
         verbose_name_plural = "Villes"
-        unique_together = ('name', 'country')
-
+        unique_together = ("name", "country")
 
     def __str__(self):
         return self.name
 
 
 def media_directory_path(instance, filename):
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     base = os.path.splitext(filename)[0]  # nom sans extension
     filename = f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.{ext}"
     return f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{filename}"
 
 
 class Agency(TimeStampedModel, NamedModel):
-    country = models.ForeignKey(Country, verbose_name="Pays", on_delete=models.CASCADE, related_name="agencies",blank=False, null=False)
-    code = models.CharField(max_length=10, unique=True,blank=False, null=False, validators=[RegexValidator(
-        r'^[A-Z0-9_]+$',"Seuls les caractères A-Z, 0-9 et _ sont autorisés pour le code d'agence."
-    )])
-    address = models.CharField(verbose_name="Adresse", max_length=200, blank=True, null=True,default="")
-    phone = PhoneNumberField(verbose_name="Télephone", region="FR", unique=False,
-                                                 blank=True, null=True,default="")
+    country = models.ForeignKey(
+        Country,
+        verbose_name="Pays",
+        on_delete=models.CASCADE,
+        related_name="agencies",
+        blank=False,
+        null=False,
+    )
+    code = models.CharField(
+        max_length=10,
+        unique=True,
+        blank=False,
+        null=False,
+        validators=[
+            RegexValidator(
+                r"^[A-Z0-9_]+$",
+                "Seuls les caractères A-Z, 0-9 et _ sont autorisés pour le code d'agence.",
+            )
+        ],
+    )
+    address = models.CharField(
+        verbose_name="Adresse", max_length=200, blank=True, null=True, default=""
+    )
+    phone = PhoneNumberField(
+        verbose_name="Télephone",
+        region="FR",
+        unique=False,
+        blank=True,
+        null=True,
+        default="",
+    )
     logo = models.FileField(upload_to=media_directory_path, blank=True, null=True)
     history = HistoricalRecords()  # ajout de l'historique
+
     class Meta:
         verbose_name = "Agence"
         verbose_name_plural = "Agences"
         constraints = [
-            UniqueConstraint(fields=['name', 'country'],
-                             name="unique_agency_name_per_country")
+            UniqueConstraint(
+                fields=["name", "country"], name="unique_agency_name_per_country"
+            )
         ]
 
     def save(self, *args, **kwargs):
@@ -79,34 +125,39 @@ class Agency(TimeStampedModel, NamedModel):
     def created_agency_sequence(self):
         """Crée une séquence PostgreSQL spécifique à cette branche si elle n'existe pas"""
         # Nettoyage du code pour qu'il soit conforme au SQL identifier
-        safe_code = re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.code.upper())
         sequence_name = f"customer_code_seq_{safe_code}"
         with connection.cursor() as cursor:
-            cursor.execute(f"""
+            cursor.execute(
+                f"""
                 CREATE SEQUENCE IF NOT EXISTS {sequence_name}
                 START 1 INCREMENT 1;
-            """)
+            """
+            )
 
     def created_ticket_sequence(self):
         """séquence de création des code tickets"""
-        safe_code =re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.code.upper())
         sequence_name = f"ticket_code_seq_{safe_code}"
         with connection.cursor() as cursor:
-            cursor.execute(f"""
+            cursor.execute(
+                f"""
                 CREATE SEQUENCE IF NOT EXISTS {sequence_name}
                 START 1 INCREMENT 1;
-            """)
+            """
+            )
 
     def created_package_sequence(self):
         """séquence de création des code tickets"""
-        safe_code = re.sub(r'[^A-Za-z0-9_]', '_', self.code.upper())
+        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.code.upper())
         sequence_name = f"package_code_seq_{safe_code}"
         with connection.cursor() as cursor:
-            cursor.execute(f"""
+            cursor.execute(
+                f"""
                    CREATE SEQUENCE IF NOT EXISTS {sequence_name}
                    START 1 INCREMENT 1;
-               """)
-
+               """
+            )
 
     def __str__(self):
         return self.name

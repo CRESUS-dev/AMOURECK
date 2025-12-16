@@ -11,7 +11,7 @@
             <hr>
 
 
-            <a href="{% url 'simcard_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un transfert</a>
+            <a href="{% url 'transfert_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un transfert</a>
 
             <hr>
             <div class="row">
@@ -27,13 +27,11 @@
                             <label for="endDate" class="form-label">📅 Date fin</label>
                             <input type="date" id="endDate" class="form-control">
                         </div>
+
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <input type="text" id="searchinput" class="form-control mb-3"
-                                   placeholder="🔍 Recherche par Nom, prénoms, Tél">
-                        </div>
+
                         <div class="col-md-3">
                             <select id="filterAgency" class="form-select ">
                                 <option value="">🏬Toutes les agences</option>
@@ -43,26 +41,28 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select id="statut" class="form-select">
-                                <option value="">Statut</option>
-                                <option value="PAYE">PAYE</option>
-                                <option value="NON_PAYE">NON_PAYE</option>
+                            <select id="statut" class="form-select mt-3">
+                                <option value="">Opération</option>
+                                <option value="depot">Dépôt</option>
+                                <option value="retrait">Retrait</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <table class="table table-bordered table-striped">
 
-                    <thead class="text-center text-black text-bg-light ">
+                    <thead class=" text-white" style="background: #198754">
                     <tr>
 
-                        <th scope="col">Agence</th>
-                        <th scope="col">Carte SIM</th>
+                        <th scope="col" class="d-none d-md-table-cell">Agence</th>
+                        <th scope="col" class="d-none d-md-table-cell">Carte SIM</th>
                         <th scope="col">Type Opération</th>
                         <th scope="col">N° Client</th>
                         <th scope="col">Montant</th>
                         <th scope="col">Commission</th>
+                        <th scope="col">Solde</th>
                         <th scope="col">Capture</th>
+
 
                     </tr>
                     </thead>
@@ -70,8 +70,8 @@
                     {% for transfert in transferts %}
                         <tr>
 
-                            <td>{{ transfert.agency }}</td>
-                            <td>{{ transfert.sim_card }}</td>
+                            <td class="d-none d-md-table-cell"> {{ transfert.agency }}</td>
+                            <td class="d-none d-md-table-cell">{{ transfert.sim_card }}</td>
                             <td>
                                 {% if transfert.operation_type == "S" %}
                                     <span class="badge bg-danger">
@@ -85,10 +85,38 @@
 
                             </td>
                             <td>{{ transfert.number }}</td>
-                            <td>{{ transfert.amount.amount|intcomma }} {{ transfert.amount.currency }}</td>
+                            <td>
+                                {% if transfert.amount < 0 or transfert.operation_type == "S" %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-arrow-down"></i> {{ transfert.amount|intcomma }} {{ transfert.currency }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-arrow-up"></i> {{ transfert.amount|intcomma }} {{ transfert.currency }}
+                                    </span>
+                                {% endif %}
 
+                            </td>
 
-                            <td>{{ transfert.commission_amount.amount|intcomma }} {{ transfert.commission_amount.currency }}</td>
+                            <td>
+                                {% if transfert.commission_amount < 0 or transfert.operation_type == "S" %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-arrow-down"></i> {{ transfert.commission_amount|intcomma }} {{ transfert.currency }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-arrow-up"></i> {{ transfert.commission_amount|intcomma }} {{ transfert.currency }}
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                            <span class="fw-bold">
+                                       {{ transfert.balance|intcomma }} {{ transfert.currency }}
+                                    </span>
+
+                            </td>
 
                             <td>
                                 {% if transfert.screenshot %}
@@ -100,20 +128,6 @@
                             </td>
 
 
-                            <!-- Boutons CRUD -->
-                            <td>
-                                <div class="d-flex flex-column flex-sm-row gap-2">
-
-                                    <button
-                                            class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ simcard.id }}">
-
-                                        Supprimer
-                                    </button>
-                                    {#                            {% endif %}#}
-                                </div>
-                            </td>
                         </tr>
 
 

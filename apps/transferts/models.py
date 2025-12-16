@@ -2,13 +2,21 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
-from apps.core.models import TimeStampedModel, NamedModel, media_directory_path
+
+from AMOURECK import settings
+from apps.core.models import (
+    TimeStampedModel,
+    NamedModel,
+    media_directory_path,
+    Currency,
+)
 from apps.country.models import Country, Agency
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 import os
 from datetime import datetime
 from django.db.models import UniqueConstraint
+from apps.accounts.models import CustomUser
 
 
 class PhoneOperator(TimeStampedModel, NamedModel):
@@ -47,14 +55,25 @@ class SimCard(TimeStampedModel):
     number = PhoneNumberField(
         verbose_name="Numéro", region=None, unique=True, blank=False, null=False
     )
-    balance = MoneyField(
+    balance = models.DecimalField(
         verbose_name="Solde du compte",
         max_digits=12,
-        decimal_places=2,
-        default=Money(0, "XOF"),
+        decimal_places=0,
     )
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+    )
+
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="simcards",
     )
 
     class Meta:
@@ -67,7 +86,7 @@ class SimCard(TimeStampedModel):
         ]
 
     def __str__(self):
-        return f"{self.operator}-{self.number}"
+        return f"{self.operator}"
 
 
 class Transfert(TimeStampedModel):
@@ -85,11 +104,8 @@ class Transfert(TimeStampedModel):
         verbose_name="Numéro", region=None, unique=False, blank=True, null=False
     )
 
-    amount = MoneyField(
-        verbose_name="Montant Opération",
-        max_digits=12,
-        decimal_places=0,
-        # default=Money(0, "XOF"),
+    amount = models.DecimalField(
+        verbose_name="Montant Opération", max_digits=12, decimal_places=0, default=0
     )
     screenshot = models.ImageField(
         verbose_name="Capture d'écran",
@@ -97,14 +113,21 @@ class Transfert(TimeStampedModel):
         blank=True,
         null=True,
     )
-    commission_amount = MoneyField(
+    commission_amount = models.DecimalField(
         verbose_name="Montant Commission",
         max_digits=12,
         decimal_places=0,
-        # default=Money(0, "XOF"),
+        default=0,
     )
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    balance = models.DecimalField(
+        verbose_name="Solde du compte", max_digits=12, decimal_places=0, default=0
+    )
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
     )
     history = HistoricalRecords()
 
@@ -130,8 +153,12 @@ class Commission(TimeStampedModel):
         # default=Money(0, "XOF"),
     )
     agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
-    currency = models.CharField(
-        verbose_name="Devise", max_length=10, blank=False, null=False, default="XOF"
+    currency = models.ForeignKey(
+        Currency,
+        verbose_name="Devise",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):

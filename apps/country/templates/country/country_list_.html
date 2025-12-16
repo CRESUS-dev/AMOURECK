@@ -1,101 +1,107 @@
 {% extends 'sidebar.html' %}
 
 {% block main %}
-<main>
-{% include 'messages.html' %}
-                    <div class="container-fluid px-4">
+    <main>
+        {% include 'messages.html' %}
+        <div class="container-fluid px-4">
 
-                        <h2 class="mt-4">Liste des pays</h2>
+            <h2 class="mt-4">Liste des pays</h2>
 
-                        <hr>
+            <hr>
 
 
-                    <a href="{% url 'country_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un pays</a>
+            <a href="{% url 'country_add' %}" class="btn btn-sm btn-outline-primary">Ajouter un pays</a>
 
-                        <hr>
-                        <div class="row">
+            <hr>
+            <div class="row">
 
-                          <!-- Champ de recherche -->
-{#                           {% include 'search_form.html' %}#}
+                <!-- Champ de recherche -->
+                {#                           {% include 'search_form.html' %}#}
 
-                        <table class="table table-bordered table-striped">
-                          <thead>
-                            <tr>
-                              <th scope="col" >Nom Pays </th>
-                              <th scope="col" >Code ISO </th>
-                              <th scope="col" >Devise </th>
-                              <th scope="col" >Est actif </th>
+                <table class="table table-bordered table-striped">
+                    <thead class=" text-white" style="background: #198754">
+                    <tr>
+                        <th scope="col">Nom Pays</th>
+                        <th scope="col">Code ISO</th>
+                        <th scope="col">Devise</th>
+                        <th scope="col">Est actif</th>
+                        <th scope="col">Action</th>
 
-                            </tr>
-                          </thead>
-                          <tbody>
-                                {% for country in countries %}
-                            <tr>
-                              <td >{{ country.name }}</td>
-                              <td >{{ country.iso_code }}</td>
-                              <td >{{ country.currency }}</td>
-                              <td >{{ country.is_active }}</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for country in countries %}
+                        <tr>
+                            <td>{{ country.name }}</td>
+                            <td>{{ country.iso_code }}</td>
+                            <td>{{ country.currency }}</td>
+                            <td>{{ country.is_active }}</td>
 
 
                             <!-- Boutons CRUD -->
-                             <td >
+                            <td>
                                 <div class="d-flex flex-column flex-sm-row gap-2">
-{#                                {% if perms.products.change_product %}#}
+                                    {#                                {% if perms.products.change_product %}#}
                                     <a href="{% url 'country_edit' country.id %}" class="btn btn-sm btn-warning">Modifier</a>
 
-        {#                                {% endif %}#}
+                                    {#                                {% endif %}#}
 
-        {#                            {% if perms.products.delete_product %}#}
-                                <button
-                                   class="btn btn-sm btn-danger"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ country.id }}">
+                                    {#                            {% if perms.products.delete_product %}#}
+                                    <button
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ country.id }}">
 
-                                    Supprimer
-                                </button>
-{#                            {% endif %}#}
-                        </div>
+                                        Supprimer
+                                    </button>
+                                    {#                            {% endif %}#}
+                                </div>
                             </td>
-                    </tr>
+                        </tr>
 
 
 
-                                <!-- Modale de confirmation -->
-                                    <div class="modal fade" id="deleteModal{{ country.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ country.id }}" aria-hidden="true">
-                                      <div class="modal-dialog">
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ country.id }}">Confirmation de suppression</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                                          </div>
-                                          <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer le pays <strong>{{country.name }}</strong> ?
-                                          </div>
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-
-                                            <form method="post" action="{% url 'country_delete' country.id %}">
-                                              {% csrf_token %}
-                                              <button type="submit" class="btn btn-danger">Confirmer</button>
-                                            </form>
-                                          </div>
-                                        </div>
-                                      </div>
+                        <!-- Modale de confirmation -->
+                        <div class="modal fade" id="deleteModal{{ country.id }}" tabindex="-1"
+                             aria-labelledby="deleteModalLabel{{ country.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ country.id }}">Confirmation de
+                                            suppression</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Fermer"></button>
                                     </div>
+                                    <div class="modal-body">
+                                        Êtes-vous sûr de vouloir supprimer le pays <strong>{{ country.name }}</strong> ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Annuler
+                                        </button>
+
+                                        <form method="post" action="{% url 'country_delete' country.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Confirmer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         </td>
-                            </tr>
+                        </tr>
 
-                                {% endfor %}
+                    {% endfor %}
 
-                          </tbody>
-                        </table>
-                           {% include 'pagination.html' %}
+                    </tbody>
+                </table>
+                {% include 'pagination.html' %}
 
-                        </div>
+            </div>
 
-                    </div>
-                </main>
+        </div>
+    </main>
 
 {% endblock main %}
 

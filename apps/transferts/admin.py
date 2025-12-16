@@ -13,7 +13,7 @@ class PhoneOperatorAdmin(admin.ModelAdmin):
 @admin.register(SimCard)
 class SimCardAdmin(admin.ModelAdmin):
     model = SimCard
-    list_display = ["operator", "number", "balance", "currency"]
+    list_display = ["operator", "number", "balance", "currency", "assigned_to"]
 
 
 @admin.register(Transfert)
@@ -26,6 +26,7 @@ class TransfertAdmin(admin.ModelAdmin):
         "operation_type",
         "amount_display",
         "commission_amount_display",
+        "balance_display",
         "image_tag",
     )
     list_filter = ["agency", "sim_card"]
@@ -41,19 +42,27 @@ class TransfertAdmin(admin.ModelAdmin):
 
     def amount_display(self, obj):
         # formattage propre : 150 000 et devise dynamique
-        amount = intcomma(obj.amount.amount).replace(",", " ")
-        currency = obj.amount.currency  # ou obj.amount.currency.symbol
+        amount = intcomma(obj.amount).replace(",", " ")
+        currency = obj.currency  # ou obj.amount.currency.symbol
         return f"{amount} {currency}"
 
     amount_display.short_description = "Montant"
 
     def commission_amount_display(self, obj):
         # formattage propre : 150 000 et devise dynamique
-        commission_amount = intcomma(obj.commission_amount.amount).replace(",", " ")
-        currency = obj.commission_amount.currency  # ou obj.amount.currency.symbol
+        commission_amount = intcomma(obj.commission_amount).replace(",", " ")
+        currency = obj.currency  # ou obj.amount.currency.symbol
         return f"{commission_amount} {currency}"
 
     commission_amount_display.short_description = "Commission"
+
+    def balance_display(self, obj):
+        # formattage propre : 150 000 et devise dynamique
+        balance = intcomma(obj.balance).replace(",", " ")
+        currency = obj.currency  # ou obj.amount.currency.symbol
+        return f"{balance} {currency}"
+
+    balance_display.short_description = "Solde"
 
 
 @admin.register(Commission)

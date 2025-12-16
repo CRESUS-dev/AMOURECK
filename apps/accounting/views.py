@@ -32,8 +32,8 @@ class AccountingCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         agency_id = self.request.session.get("agency_id")
-        currency = self.request.session.get("currency", "XOF")
-        form.instance.currency = currency
+        currency_id = self.request.session.get("currency_id")
+        form.instance.currency_id = currency_id
         form.instance.agency_id = agency_id
 
         return super().form_valid(form)
