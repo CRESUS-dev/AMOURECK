@@ -7,10 +7,6 @@ from django.utils.html import format_html
 class CountryAdmin(admin.ModelAdmin):
     fields = ("name", "iso_code", "currency", "is_active")
 
-    # @admin.display(description="Devise")
-    # def get_currency(self, obj):
-    #     return obj.currency
-
 
 @admin.register(Town)
 class TownAdmin(admin.ModelAdmin):
