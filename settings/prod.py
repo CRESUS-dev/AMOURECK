@@ -3,7 +3,13 @@ from .base import *
 DEBUG = False
 ENVIRONMENT = "PROD"
 
-ALLOWED_HOSTS = ["amoureck.com", "www.amoureck.com"]
+ALLOWED_HOSTS = [
+    "amoureck.com",
+    "www.amoureck.com",
+    "izisoft.org",
+    "www.izisoft.org",
+    "admin.izisoft.org",
+]
 
 DATABASES = {
     "default": {
