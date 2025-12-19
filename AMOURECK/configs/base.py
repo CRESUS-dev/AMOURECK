@@ -55,6 +55,14 @@ INSTALLED_APPS = [
     "apps.transferts.apps.TransfertsConfig",
 ]
 
+
+# configs/base.py
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 # Dev: mémoire (suffisant en local)
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
