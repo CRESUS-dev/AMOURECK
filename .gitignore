@@ -12,7 +12,7 @@ media/
 # Eviter d’exposer les fichiers sensibles
 .env.local
 *.env
-.env
+.env.prod
 .env.prod
 .env.prod.db
 

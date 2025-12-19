@@ -3,7 +3,8 @@ from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 
-from AMOURECK import settings
+from django.conf import settings
+
 from apps.core.models import (
     TimeStampedModel,
     NamedModel,

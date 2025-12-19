@@ -1,15 +1,17 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
 ENVIRONMENT = "STAGING"
 
 ALLOWED_HOSTS = [
-    "staging.amoureck.com",
+    # "staging.amoureck.com",
     "127.0.0.1",
-    "izisoft.org",
-    "www.izisoft.org",
-    "admin.izisoft.org",
+    "localhost",
+    # "izisoft.org",
+    # "www.izisoft.org",
+    # "admin.izisoft.org",
 ]
+
 
 DATABASES = {
     "default": {
