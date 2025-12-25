@@ -22,7 +22,7 @@ from apps.accounts.models import CustomUser
 
 class PhoneOperator(TimeStampedModel, NamedModel):
     country = models.ForeignKey(
-        Country, verbose_name="Pays", blank=False, null=False, on_delete=models.CASCADE
+        Country, verbose_name="Pays", blank=False, null=False, on_delete=models.PROTECT
     )
     history = HistoricalRecords()
 
@@ -50,7 +50,7 @@ class SimCard(TimeStampedModel):
         verbose_name="Opérateur téléphonique",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="operators",
     )
     number = PhoneNumberField(
@@ -66,7 +66,7 @@ class SimCard(TimeStampedModel):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
 
     assigned_to = models.ForeignKey(
@@ -91,11 +91,11 @@ class SimCard(TimeStampedModel):
 
 
 class Transfert(TimeStampedModel):
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     sim_card = models.ForeignKey(
         SimCard,
         verbose_name="SIM",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="transfert_sim_card",
     )
     operation_type = models.CharField(
@@ -128,7 +128,7 @@ class Transfert(TimeStampedModel):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     history = HistoricalRecords()
 
@@ -143,7 +143,7 @@ class Transfert(TimeStampedModel):
 class Commission(TimeStampedModel):
     transfer = models.OneToOneField(
         "transferts.Transfert",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="commission",
         verbose_name="Transfert",
     )
@@ -153,13 +153,13 @@ class Commission(TimeStampedModel):
         decimal_places=0,
         # default=Money(0, "XOF"),
     )
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     currency = models.ForeignKey(
         Currency,
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
 
     def __str__(self):

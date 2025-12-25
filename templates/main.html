@@ -21,10 +21,21 @@
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card text-white mb-4" style="height: 190px; background: #0b9d72">
-                        <div class="card-body " style="font-size: 1.3rem">Vente de tickets du Mois</div>
+                        <div class="card-body " style="font-size: 1rem">Vente de tickets du Mois</div>
                         <p>Nbre: <strong>{{ nb_ticket }}</strong></p>
-                        <p>Montant: <strong
-                                style="font-size: 1.3rem">{{ sum_ticket_price|intcomma }} {{ currency }}</strong></p>
+                        <br>
+
+                        <strong
+                                style="font-size: 1rem">
+                            {#                            {{ sum_ticket_price|intcomma }} {{ currency }}#}
+                            {% for row in sum_ticket_price %}
+                                <p>Montant:
+                                    {{ row.total_ticket_price|intcomma }}
+                                    {{ row.currency__code }}
+                                </p>
+                            {% endfor %}
+                        </strong>
+
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link" href={% url 'ticket_list' %}>Voir détails</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -33,9 +44,18 @@
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card text-white mb-4" style="height: 190px; background: #b69e04">
-                        <div class="card-body " style="font-size: 1.3rem">Commission sur Transfert du Mois</div>
-                        <strong class="text-center"
-                                style="font-size: 1.3rem">{{ monthly_commission|intcomma }} {{ currency }}</strong>
+                        <div class="card-body " style="font-size: 1rem">Commission sur Transfert du Mois</div>
+                        <strong class="text-center" style="font-size: 1rem">
+
+                            {#                            {{ monthly_commission|intcomma }} {{ currency }}#}
+
+                            {% for row in monthly_commission %}
+                                <p>
+                                    {{ row.total_comm|intcomma }}
+                                    {{ row.currency__code }}
+                                </p>
+                            {% endfor %}
+                        </strong>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link" href={% url 'transfert_list' %}>Voir détails</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -44,10 +64,22 @@
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card  text-white mb-4" style="height: 190px; background: #ee294d">
-                        <div class="card-body" style="font-size: 1.3rem">Situation des colis du Mois</div>
-                        <p>Nbre: <strong style="font-size: 1.3rem">{{ monthly_packages_number }}</strong></p>
-                        <p>Montant: <strong
-                                style="font-size: 1.3rem">{{ sum_package_price|intcomma }} {{ currency }}</strong></p>
+                        <div class="card-body" style="font-size: 1rem">Situation des colis du Mois</div>
+                        <p>Nbre: <strong style="font-size: 1rem">{{ monthly_packages_number }}</strong></p>
+                        <br>
+                        <strong style="font-size: 1rem">
+
+                            {% for row in sum_package_price %}
+                                <p>
+                                    Montant:
+                                    {{ row.total_amount|intcomma }}
+                                    {{ row.currency__code }}
+                                </p>
+                            {% endfor %}
+                            {#                            {{ sum_package_price|intcomma }} {{ currency }}#}
+
+                        </strong>
+                        
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link" href={% url 'package_list' %}>Voir détails</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>

@@ -18,19 +18,19 @@ STATUS = (("PAYE", "Payé"), ("NON_PAYE", "Non payé"))
 
 
 class Ticket(TimeStampedModel):
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     ticket_code = models.CharField(max_length=50, blank=True, null=True)
     customer = models.ForeignKey(
         Customer,
         verbose_name="Nom client",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
     )
     departure_town = models.ForeignKey(
         Town,
         verbose_name="Ville de départ",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
         related_name="departs",
@@ -38,7 +38,7 @@ class Ticket(TimeStampedModel):
     arrival_town = models.ForeignKey(
         Town,
         verbose_name="Ville d'arrivé",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
         related_name="arrivées",
@@ -73,7 +73,7 @@ class Ticket(TimeStampedModel):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     history = HistoricalRecords()  # ajout de l'historique
 
@@ -82,23 +82,13 @@ class Ticket(TimeStampedModel):
         verbose_name_plural = "Tickets"
 
     def save(self, *args, **kwargs):
-        if not self.ticket_code:
-            self.ticket_code = self.generate_ticket_code()
+        is_new = self.pk is None
+
         super().save(*args, **kwargs)
 
-    def generate_ticket_code(self):
-        """generate ticket code"""
-        import re
-        from django.utils import timezone
-
-        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.agency.code.upper())
-        sequence_name = f"ticket_code_seq_{safe_code}"
-        with connection.cursor() as cursor:
-            cursor.execute(f" SELECT nextval('{sequence_name}')")
-            next_id = cursor.fetchone()[0]
-
-        year = timezone.now().year
-        return f"TCK-{self.agency.code}-{year}-{next_id:06d}"
+        if is_new and not self.ticket_code:
+            self.ticket_code = f"TIQ-{self.agency.code}-{self.id:06d}"
+            super().save(update_fields=["ticket_code"])
 
     def __str__(self):
         return f"{self.ticket_code}"

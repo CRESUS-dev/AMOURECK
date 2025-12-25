@@ -20,29 +20,45 @@ def dashboard_view(request):
     nb_ticket = Ticket.objects.filter(
         agency=agency_id, created_at__year=year, created_at__month=month
     ).count()
-    sum_ticket_price = Ticket.objects.filter(
-        agency=agency_id,
-        created_at__year=year,
-        created_at__month=month,
-    ).aggregate(total_amount=Sum("ticket_price", default=0))["total_amount"]
+    sum_ticket_price = (
+        Ticket.objects.filter(
+            agency=agency_id,
+            created_at__year=year,
+            created_at__month=month,
+        )
+        .values("currency__code")
+        .annotate(total_ticket_price=Sum("ticket_price"))
+        .order_by("currency__code")
+    )
 
-    monthly_commission = Transfert.objects.filter(
-        agency=agency_id,
-        created_at__year=year,
-        created_at__month=month,
-    ).aggregate(total_comm=Sum("commission_amount", default=0))["total_comm"]
-
+    monthly_commission = (
+        Transfert.objects.filter(
+            agency=agency_id,
+            created_at__year=year,
+            created_at__month=month,
+        )
+        .values("currency__code")
+        .annotate(total_comm=Sum("commission_amount"))
+        .order_by("currency__code")
+    )
     monthly_packages_number = Package.objects.filter(
         agency=agency_id,
         created_at__year=year,
         created_at__month=month,
     ).count()
 
-    sum_package_price = Package.objects.filter(
-        agency=agency_id,
-        created_at__year=year,
-        created_at__month=month,
-    ).aggregate(total_amount=Sum("price", default=0))["total_amount"]
+    sum_package_price = (
+        Package.objects.filter(
+            agency=agency_id,
+            created_at__year=year,
+            created_at__month=month,
+        )
+        .values("currency__code")
+        .annotate(total_amount=Sum("price"))
+        .order_by("currency__code")
+    )
+    # .aggregate(total_amount=Sum("price", default=0))["total_amount"]
+
     return render(
         request,
         "dashboard/dashboard.html",

@@ -68,5 +68,5 @@ class TransfertAdmin(admin.ModelAdmin):
 @admin.register(Commission)
 class CommissionAdmin(admin.ModelAdmin):
     model = Commission
-    list_display = ("agency", "amount", "transfer", "updated_at")
+    list_display = ("agency", "amount", "transfer", "currency", "updated_at")
     list_filter = ["agency"]

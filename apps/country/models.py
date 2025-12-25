@@ -31,7 +31,7 @@ class Country(TimeStampedModel, NamedModel, SessionUserMixin):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     is_active = models.BooleanField(default=False)
     history = HistoricalRecords()  # ajout de l'historique
@@ -75,7 +75,7 @@ class Agency(TimeStampedModel, NamedModel):
     country = models.ForeignKey(
         Country,
         verbose_name="Pays",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="agencies",
         blank=False,
         null=False,

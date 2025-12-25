@@ -4,12 +4,12 @@ DEBUG = True
 ENVIRONMENT = "STAGING"
 
 ALLOWED_HOSTS = [
-    # "staging.amoureck.com",
+    "staging.amoureck.com",
     "127.0.0.1",
     "localhost",
-    # "izisoft.org",
-    # "www.izisoft.org",
-    # "admin.izisoft.org",
+    "izisoft.org",
+    "www.izisoft.org",
+    "admin.izisoft.org",
 ]
 
 

@@ -13,7 +13,7 @@ OPEREATION_TYPE_CHOICE = (
 
 
 class Accounting(TimeStampedModel):
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     operation_type = models.CharField(
         max_length=5,
         verbose_name="Type opération",
@@ -40,5 +40,5 @@ class Accounting(TimeStampedModel):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )

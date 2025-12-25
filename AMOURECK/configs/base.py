@@ -165,7 +165,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"  # collectstatic en prod
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "AMOURECK/../../static"),
+    # os.path.join(BASE_DIR, "AMOURECK/../../static"),
+    os.path.join(BASE_DIR, "static"),
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 

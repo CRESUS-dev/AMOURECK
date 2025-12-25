@@ -5,6 +5,7 @@ from apps.country.models import Country, Agency, Town
 from apps.accounts.models import CustomUser
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
+from django.db import transaction
 
 
 class Customer(TimeStampedModel):
@@ -13,7 +14,7 @@ class Customer(TimeStampedModel):
         ("F", "Féminin"),
     )
 
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     code = models.CharField(max_length=50, unique=True, blank=True)
     firstName = models.CharField(
         verbose_name="Prénoms", max_length=150, blank=False, null=False
@@ -39,7 +40,7 @@ class Customer(TimeStampedModel):
     address = models.CharField(
         verbose_name="Adresse", max_length=200, blank=True, null=True, default=""
     )
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name="Pays")
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name="Pays")
     history = HistoricalRecords()  # ajout de l'historique
 
     class Meta:
@@ -48,24 +49,13 @@ class Customer(TimeStampedModel):
         unique_together = (("firstName", "lastName", "phone_number"),)
 
     def save(self, *args, **kwargs):
-        if not self.code:
-            self.code = self.generate_code()
+        is_new = self.pk is None
+
         super().save(*args, **kwargs)
 
-    def generate_code(self):
-        """consommation de la séquence du modèle agence"""
-        import re
-        from django.utils import timezone
-
-        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.agency.code.upper())
-        sequence_name = f"ticket_code_seq_{safe_code}"
-
-        with connection.cursor() as cursor:
-            cursor.execute(f"SELECT nextval('{sequence_name}')")
-            next_id = cursor.fetchone()[0]
-
-        year = timezone.now().year
-        return f"{self.agency.code}-{year}-{next_id:06d}"
+        if is_new and not self.code:
+            self.code = f"CLT-{self.agency.code}-{self.id:06d}"
+            super().save(update_fields=["code"])
 
     def __str__(self):
         return f"{self.lastName}  {self.firstName}"

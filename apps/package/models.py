@@ -12,6 +12,7 @@ from apps.core.models import *
 from apps.customer.models import Customer
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
+from django.db import transaction
 
 PAYMENT_METHOD = (
     ("CASH", "Espèces"),
@@ -23,19 +24,19 @@ STATUS = (("PAYE", "Payé"), ("NON_PAYE", "Non payé"))
 
 
 class Package(TimeStampedModel):
-    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.CASCADE)
+    agency = models.ForeignKey(Agency, verbose_name="Agence", on_delete=models.PROTECT)
     package_code = models.CharField(max_length=50, blank=True, null=True)
     customer = models.ForeignKey(
         Customer,
         verbose_name="Nom client",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
     )
     departure_town = models.ForeignKey(
         Town,
         verbose_name="Ville de départ",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
         related_name="departure_town",
@@ -43,7 +44,7 @@ class Package(TimeStampedModel):
     arrival_town = models.ForeignKey(
         Town,
         verbose_name="Ville d'arrivé",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False,
         null=False,
         related_name="arrival_town",
@@ -87,7 +88,7 @@ class Package(TimeStampedModel):
         verbose_name="Devise",
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     history = HistoricalRecords()  # ajout de l'historique
 
@@ -95,25 +96,41 @@ class Package(TimeStampedModel):
         verbose_name = "Colis"
         verbose_name_plural = "Colis"
 
+    #
+    # def generate_package_code(self):
+    #     with transaction.atomic():
+    #         self.pk = None
+    #         super().save(force_insert=True)
+    #         return f"PKG-{self.agency.code}-{self.id:06d}"
+
     def save(self, *args, **kwargs):
-        """generate pacakge code if it not exist"""
-        if not self.package_code:
-            self.package_code = self.generate_package_code()
+        is_new = self.pk is None
+
         super().save(*args, **kwargs)
 
-    def generate_package_code(self):
-        """generate package code"""
-        import re
-        from django.utils import timezone
+        if is_new and not self.package_code:
+            self.package_code = f"PKG-{self.agency.code}-{self.id:06d}"
+            super().save(update_fields=["package_code"])
 
-        safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.agency.code.upper())
-        sequence_name = f"package_code_seq_{safe_code}"
-        with connection.cursor() as cursor:
-            cursor.execute(f" SELECT nextval('{sequence_name}')")
-            next_id = cursor.fetchone()[0]
+    # def save(self, *args, **kwargs):
+    #     """generate pacakge code if it not exist"""
+    #     if not self.package_code:
+    #         self.package_code = self.generate_package_code()
+    #     super().save(*args, **kwargs)
 
-        year = timezone.now().year
-        return f"COLIS-{self.agency.code}-{year}-{next_id:06d}"
+    # def generate_package_code(self):
+    #     """generate package code"""
+    #     import re
+    #     from django.utils import timezone
+    #
+    #     safe_code = re.sub(r"[^A-Za-z0-9_]", "_", self.agency.code.upper())
+    #     sequence_name = f"package_code_seq_{safe_code}"
+    #     with connection.cursor() as cursor:
+    #         cursor.execute(f" SELECT nextval('{sequence_name}')")
+    #         next_id = cursor.fetchone()[0]
+    #
+    #     year = timezone.now().year
+    #     return f"COLIS-{self.agency.code}-{year}-{next_id:06d}"
 
     def __str__(self):
         return f"{self.package_code}"
